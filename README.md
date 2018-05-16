@@ -7,7 +7,7 @@ components and sharing state across components and through slots.
 
 ## Example Usage
 
-1. First we will create a Tunnel.
+### 1. First we will create a Tunnel.
 
 `./data/message.ts`
 
@@ -24,7 +24,7 @@ export default createProviderConsumer<State>({
 });
 ```
 
-2. Create a tunnel entry point.  Usually this will be at the top of your component tree.
+### 2. Create a tunnel entry point.  Usually this will be at the top of your component tree.
 
 `./components/my-app.tsx`
 ```tsx
@@ -68,7 +68,7 @@ export class MyApp {
 }
 ```
 
-3. You can then create an exit point any where within your component tree that lives below the Tunnel.Provider.
+### 3. You can then create an exit point any where within your component tree that lives below the Tunnel.Provider.
 
 `./components/way-down-child.tsx`
 ```tsx
