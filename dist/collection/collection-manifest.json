@@ -1,0 +1,41 @@
+{
+  "components": [
+    {
+      "tag": "context-consumer",
+      "dependencies": [],
+      "componentClass": "ContextConsumer",
+      "componentPath": "components/state-tunnel/state-tunnel.js",
+      "styles": {},
+      "props": [
+        {
+          "name": "context",
+          "attr": "context"
+        },
+        {
+          "name": "renderer",
+          "type": "Any",
+          "attr": "renderer"
+        },
+        {
+          "name": "subscribe",
+          "attr": "subscribe"
+        }
+      ],
+      "states": [
+        {
+          "name": "unsubscribe"
+        }
+      ],
+      "hostElement": {
+        "name": "el"
+      }
+    }
+  ],
+  "collections": [],
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "0.9.0",
+    "typescriptVersion": "2.8.3"
+  },
+  "bundles": []
+}
