@@ -11,7 +11,7 @@ components and sharing state across components and through slots.
 
 `./data/message.ts`
 
-```tsx
+```jsx
 import { createProviderConsumer } from '@stencil/state-tunnel';
 
 export interface State {
@@ -27,7 +27,7 @@ export default createProviderConsumer<State>({
 ### 2. Create a tunnel entry point.  Usually this will be at the top of your component tree.
 
 `./components/my-app.tsx`
-```tsx
+```jsx
 import Tunnel from './data/message.ts';
 
 @Component({
@@ -71,7 +71,7 @@ export class MyApp {
 ### 3. You can then create an exit point any where within your component tree that lives below the Tunnel.Provider.
 
 `./components/way-down-child.tsx`
-```tsx
+```jsx
 import { Component } from '@stencil/core';
 import Tunnel from './data/message.ts';
 
