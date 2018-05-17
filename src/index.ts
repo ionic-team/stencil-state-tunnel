@@ -1,2 +1,2 @@
 export * from './components';
-export * from './components/state-tunnel/state-tunnel';
+export * from './utils/state-tunnel';
