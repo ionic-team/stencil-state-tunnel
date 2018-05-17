@@ -1,1 +1,0 @@
-// mycomponent: CommonJS Main
