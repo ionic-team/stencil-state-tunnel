@@ -12,6 +12,7 @@
   "scripts": {
     "build": "stencil build",
     "dev": "sd concurrent \"stencil build --dev --watch\" \"stencil-dev-server\" ",
+    "deploy": "npm run build && np",
     "serve": "stencil-dev-server",
     "start": "npm run dev",
     "test": "jest",
@@ -23,7 +24,8 @@
     "@stencil/dev-server": "latest",
     "@stencil/utils": "latest",
     "@types/jest": "^21.1.1",
-    "jest": "^21.2.1"
+    "jest": "^21.2.1",
+    "np": "^2.20.1"
   },
   "repository": {
     "type": "git",
