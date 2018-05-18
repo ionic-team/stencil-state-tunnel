@@ -10,6 +10,8 @@ components and sharing state across components and through slots.
 ### 1. Create a Tunnel.
 
 Define the structure of data to be passed through the tunnel.  Also provide a default value to the tunnel.
+The first argument is the default value and the second argument is how the consumer works.  Mostly you will just need
+to copy and paste this. 'context-consumer' is a component that is included in this package.
 
 `./data/message.ts`
 
