@@ -1,6 +1,6 @@
 {
   "name": "@stencil/state-tunnel",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Stencil State Tunnel",
   "module": "dist/collection/index.js",
   "main": "dist/index.js",
@@ -29,14 +29,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ionic-team/stencil-component-starter.git"
+    "url": "git+https://github.com/ionic-team/stencil-state-tunnel.git"
   },
   "author": "Ionic Team",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ionic-team/stencil"
+    "url": "https://github.com/ionic-team/stencil-state-tunnel"
   },
-  "homepage": "https://github.com/ionic-team/stencil",
+  "homepage": "https://github.com/ionic-team/stencil-state-tunnel",
   "jest": {
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
