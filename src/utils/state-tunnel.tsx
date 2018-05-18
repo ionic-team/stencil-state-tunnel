@@ -1,5 +1,12 @@
 
-export function createProviderConsumer<T extends object>(defaultState: T) {
+function defaultConsumerRender(subscribe, child) {
+  return <context-consumer
+    subscribe={subscribe}
+    renderer={child}
+  />;
+}
+
+export function createProviderConsumer<T extends object>(defaultState: T, consumerRender = defaultConsumerRender) {
   type PropList = (keyof T)[] | string;
 
   let listeners: Map<HTMLStencilElement, PropList> = new Map();
@@ -46,12 +53,7 @@ export function createProviderConsumer<T extends object>(defaultState: T) {
   }
 
   function Consumer({ children }: any) {
-    return (
-      <context-consumer
-        subscribe={subscribe}
-        renderer={children[0]}
-      />
-    );
+    return consumerRender(subscribe, children[0]);
   }
 
   function wrapConsumer(childComponent: any, fieldList: PropList) {
