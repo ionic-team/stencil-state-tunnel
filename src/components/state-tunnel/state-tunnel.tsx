@@ -1,9 +1,10 @@
-import { Component, Prop, State } from '@stencil/core';
+import { Component, Prop, State, Element } from '@stencil/core';
 
 @Component({
   tag: 'context-consumer'
 })
 export class ContextConsumer {
+  @Element() el: HTMLStencilElement;
   @Prop() context: { [key: string]: any } = {};
   @Prop() renderer: any = (props: any ) => {
     props;
@@ -13,7 +14,7 @@ export class ContextConsumer {
   @State() unsubscribe: () => void;
 
   componentWillLoad() {
-    this.unsubscribe = this.subscribe(this, 'context');
+    this.unsubscribe = this.subscribe(this.el, 'context');
   }
 
   componentDidUnload() {
