@@ -30,7 +30,7 @@ declare global {
     interface ContextConsumer {
       'context': { [key: string]: any };
       'renderer': any;
-      'subscribe': (el: HTMLStencilElement, props: string[] | string) => () => void;
+      'subscribe': (el: any, props: string[] | string) => () => void;
     }
   }
 
@@ -55,7 +55,7 @@ declare global {
     export interface ContextConsumerAttributes extends HTMLAttributes {
       'context'?: { [key: string]: any };
       'renderer'?: any;
-      'subscribe'?: (el: HTMLStencilElement, props: string[] | string) => () => void;
+      'subscribe'?: (el: any, props: string[] | string) => () => void;
     }
   }
 }

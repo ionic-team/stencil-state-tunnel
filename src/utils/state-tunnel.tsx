@@ -9,7 +9,7 @@ function defaultConsumerRender(subscribe, child) {
 export function createProviderConsumer<T extends object>(defaultState: T, consumerRender = defaultConsumerRender) {
   type PropList = (keyof T)[] | string;
 
-  let listeners: Map<HTMLStencilElement, PropList> = new Map();
+  let listeners: Map<any, PropList> = new Map();
   let currentState: T = defaultState;
 
   function notifyConsumers() {
@@ -30,7 +30,7 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
   }
 
   function attachListener(propList: PropList) {
-    return (el: HTMLStencilElement) => {
+    return (el: any) => {
       if (listeners.has(el)) {
         return;
       }
@@ -39,7 +39,7 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
     }
   }
 
-  function subscribe(el: HTMLStencilElement, propList: PropList) {
+  function subscribe(el: any, propList: PropList) {
     attachListener(propList)(el);
     return function() {
       listeners.delete(el);
@@ -68,10 +68,30 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
     };
   }
 
+  function injectProps(childComponent: any, fieldList: PropList) {
+    let unsubscribe: any = null;
+
+    const prevComponentWillLoad = childComponent.prototype.componentWillLoad;
+    childComponent.prototype.componentWillLoad = function() {
+      unsubscribe = subscribe(this, fieldList);
+      if (prevComponentWillLoad) {
+        return prevComponentWillLoad.bind(this)();
+      }
+    }
+
+    const prevComponentDidUnload = childComponent.prototype.componentDidUnload;
+    childComponent.prototype.componentDidUnload = function() {
+      unsubscribe();
+      if (prevComponentDidUnload) {
+        return prevComponentDidUnload.bind(this)();
+      }
+    }
+  }
+
   return {
     Provider,
     Consumer,
     wrapConsumer,
-    subscribe
-  }
+    injectProps
+  };
 }
