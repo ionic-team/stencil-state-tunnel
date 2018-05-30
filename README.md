@@ -5,6 +5,8 @@
 This project was built to provide additional functionality to developers working with stencil
 components and sharing state across components and through slots.
 
+The API was inspired by React's Context API.
+
 ## Example Usage
 
 ### 1. Create a Tunnel.
