@@ -1,6 +1,6 @@
 {
   "name": "@stencil/state-tunnel",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Stencil State Tunnel",
   "module": "dist/collection/index.js",
   "main": "dist/index.js",
