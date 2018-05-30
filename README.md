@@ -58,7 +58,7 @@ export class MyApp {
   }
 
   render() {
-    const state = {
+    const tunnelState = {
       message: this.message,
       increment: this.increment
     };
@@ -67,7 +67,7 @@ export class MyApp {
         <header>
           <h1>Stencil App Starter</h1>
         </header>
-        <Tunnel.Provider state={state}>
+        <Tunnel.Provider state={tunnelState}>
           <some-child-component/>
         </Tunnel.Provider>
       </div>
@@ -101,7 +101,6 @@ export class WayDownChild {
     );
   }
 }
-
 ```
 [npm-badge]: https://img.shields.io/npm/v/@stencil/state-tunnel.svg
 [npm-badge-url]: https://www.npmjs.com/package/@stencil/state-tunnel
