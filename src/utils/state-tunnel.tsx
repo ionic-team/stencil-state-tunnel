@@ -71,9 +71,17 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
   function injectProps(childComponent: any, fieldList: PropList) {
     let unsubscribe: any = null;
 
+    const elementRefName = Object.keys(childComponent.properties).find(propName => {
+      return childComponent.properties[propName].elementRef == true;
+    });
+    if (elementRefName == undefined) {
+      throw new Error(`Please ensure that your Component ${childComponent.is} has an attribtue with "@Element" decorator. ` +
+        `This is required to be able to inject properties.`);
+    }
+
     const prevComponentWillLoad = childComponent.prototype.componentWillLoad;
     childComponent.prototype.componentWillLoad = function() {
-      unsubscribe = subscribe(this.el, fieldList);
+      unsubscribe = subscribe(this[elementRefName], fieldList);
       if (prevComponentWillLoad) {
         return prevComponentWillLoad.bind(this)();
       }
