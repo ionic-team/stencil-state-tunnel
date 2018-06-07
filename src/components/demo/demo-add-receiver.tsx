@@ -1,9 +1,9 @@
 import { Component, Prop, State } from '@stencil/core';
 
 @Component({
-  tag: 'test-add-receiver',
+  tag: 'demo-add-receiver',
 })
-export class TestAddReceiver {
+export class DemoAddReceiver {
   @Prop() addReceiver: (msg: string) => void;
   @Prop() listOfReceivers: string[];
   @State() errorText: string;

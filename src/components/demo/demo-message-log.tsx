@@ -2,15 +2,15 @@ import { Component } from '@stencil/core';
 import Tunnel from './data-tunnel'; // Import the tunnel
 
 @Component({
-  tag: 'test-message-log',
+  tag: 'demo-message-log',
 })
-export class TestMessageLog {
+export class DemoMessageLog {
   render() {
     return (
       <Tunnel.Consumer>
-        {({ messageQueue }) => (
+        {({ messageLog }) => (
           <div class='app-profile'>
-            {JSON.stringify(messageQueue)}
+            {JSON.stringify(messageLog)}
           </div>
         )}
       </Tunnel.Consumer>

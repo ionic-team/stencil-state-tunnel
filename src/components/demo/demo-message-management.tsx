@@ -1,5 +1,5 @@
 import { Component, State } from '@stencil/core';
-import Tunnel, { State as TunnelState, MessageQueue } from './data-tunnel'; // Import the Tunnel
+import Tunnel, { State as TunnelState, MessageLog } from './data-tunnel'; // Import the Tunnel
 
 // Unique enough for a demo
 function getUniqueId() {
@@ -7,16 +7,16 @@ function getUniqueId() {
 }
 
 @Component({
-  tag: 'test-message-management',
+  tag: 'demo-message-management',
 })
-export class TestMessageManagement {
+export class DemoMessageManagement {
 
   @State() listOfReceivers = [];
-  @State() messageQueue: MessageQueue = [];
+  @State() messageLog: MessageLog = [];
 
   sendMessage = (msgText: string) => {
-    this.messageQueue = [
-      ...this.messageQueue,
+    this.messageLog = [
+      ...this.messageLog,
       {
         id: getUniqueId(),
         timeStamp: new Date(),
@@ -40,7 +40,7 @@ export class TestMessageManagement {
   render() {
     const tunnelState: TunnelState = {
       listOfReceivers: this.listOfReceivers,
-      messageQueue: this.messageQueue,
+      messageLog: this.messageLog,
       sendMessage: this.sendMessage,
       addReceiver: this.addReceiver,
       removeReceiver: this.removeReceiver
@@ -51,9 +51,9 @@ export class TestMessageManagement {
           <header>
             <h1>Message Demo App</h1>
           </header>
-          <test-add-message sendMessage={this.sendMessage} />
-          <test-manage-receivers />
-          <test-message-log />
+          <demo-add-message sendMessage={this.sendMessage} />
+          <demo-manage-receivers />
+          <demo-message-log />
         </div>
       </Tunnel.Provider>
     );

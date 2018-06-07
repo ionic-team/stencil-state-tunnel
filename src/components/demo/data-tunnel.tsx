@@ -6,11 +6,11 @@ export interface MessageItem {
   message: string,
   recipients: string[]
 }
-export type MessageQueue = MessageItem[];
+export type MessageLog = MessageItem[];
 
 export interface State {
   listOfReceivers: string[],
-  messageQueue: MessageQueue,
+  messageLog: MessageLog,
   sendMessage: (msg: string) => void,
   addReceiver: (receiverName: string) => void,
   removeReceiver: (receiverName: string) => void,
@@ -18,7 +18,7 @@ export interface State {
 
 export default createProviderConsumer<State>({
     listOfReceivers: [],
-    messageQueue: [],
+    messageLog: [],
     sendMessage: () => {},
     addReceiver: () => {},
     removeReceiver: () => {},

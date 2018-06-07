@@ -1,10 +1,10 @@
 import { Component, Prop } from '@stencil/core';
-import Tunnel, { MessageQueue } from './data-tunnel'; // Import the tunnel
+import Tunnel from './data-tunnel'; // Import the tunnel
 
 @Component({
-  tag: 'test-manage-receivers',
+  tag: 'demo-manage-receivers',
 })
-export class TestManageReceivers {
+export class DemoManageReceivers {
   @Prop() listOfReceivers: string[];
   @Prop() addReceiver: (receiverName: string) => void;
   @Prop() removeReceiver: (receiverName: string) => void;
@@ -22,4 +22,4 @@ export class TestManageReceivers {
   }
 }
 
-Tunnel.injectProps(TestManageReceivers, ['listOfReceivers', 'addReceiver', 'removeReceiver']);
+Tunnel.injectProps(DemoManageReceivers, ['listOfReceivers', 'addReceiver', 'removeReceiver']);
