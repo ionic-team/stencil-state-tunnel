@@ -5,19 +5,17 @@ import Tunnel, { MessageQueue } from './data-tunnel'; // Import the tunnel
   tag: 'test-wrap-consumer',
 })
 export class WayDownChild {
-  @Prop() message: string;
   @Prop() listOfReceivers: string[];
   @Prop() messageQueue: MessageQueue;
-  @Prop() increment: () => void;
+  @Prop() addMessage: () => void;
 
   render() {
     return (
       <div class='app-profile'>
-        <button onClick={this.increment}>Increment Num</button>
-        <p>{this.message}</p>
+        <button onClick={this.addMessage}>Add Message</button>
       </div>
     );
   }
 }
 
-export const WayDownChildFn = Tunnel.wrapConsumer(WayDownChild, ['message', 'listOfReceivers', 'messageQueue', 'increment']);
+export const WayDownChildFn = Tunnel.wrapConsumer(WayDownChild, ['listOfReceivers', 'messageQueue', 'addMessage']);

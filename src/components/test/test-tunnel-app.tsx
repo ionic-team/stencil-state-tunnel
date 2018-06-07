@@ -1,39 +1,63 @@
-import { Component, Prop, State } from '@stencil/core';
-import Tunnel from './data-tunnel'; // Import the Tunnel
+import { Component, State } from '@stencil/core';
+import Tunnel, { State as TunnelState, MessageQueue } from './data-tunnel'; // Import the Tunnel
+
+// Unique enough for a demo
+function getUniqueId() {
+  return (Math.random() * 10e16).toString().match(/.{4}/g).join('-');
+}
 
 @Component({
   tag: 'test-tunnel-app',
 })
-export class MyApp {
+export class TestTunnelApp {
 
-  @Prop() intro: string = 'Hello!';
-  @State() message: string = '';
+  @State() listOfReceivers = [];
+  @State() messageQueue: MessageQueue = [];
 
-  count: number = 0;
-
-  componentWillLoad() {
-    this.increment();
+  addMessage = (msgText: string) => {
+    this.messageQueue = [
+      ...this.messageQueue,
+      {
+        id: getUniqueId(),
+        timeStamp: new Date(),
+        message: msgText
+      }
+    ];
   }
 
-  increment = () => {
-    this.count = this.count + 1;
-    this.message = `${this.intro} ${this.count}`;
+  removeMessage = (msgId) => {
+    this.messageQueue = this.messageQueue.filter(msg => msg.id !== msgId);
+  }
+
+  addReceiver = (receiverName: string) => {
+    this.listOfReceivers = [
+      ...this.listOfReceivers,
+      receiverName
+    ];
+  }
+
+  removeReceiver = (receiverName: string) => {
+    this.listOfReceivers = this.listOfReceivers.filter(name => name !== receiverName);
   }
 
   render() {
-    const tunnelState = {
-      message: this.message,
-      increment: this.increment
+    const tunnelState: TunnelState = {
+      listOfReceivers: this.listOfReceivers,
+      messageQueue: this.messageQueue,
+      addMessage: this.addMessage,
+      removeMessage: this.removeMessage,
+      addReceiver: this.addReceiver,
+      removeReceiver: this.removeReceiver
     };
     return (
-      <div>
-        <header>
-          <h1>Stencil App Starter</h1>
-        </header>
-        <Tunnel.Provider state={tunnelState}>
+      <Tunnel.Provider state={tunnelState}>
+        <div>
+          <header>
+            <h1>Message Demo App</h1>
+          </header>
           <some-child-component/>
-        </Tunnel.Provider>
-      </div>
+        </div>
+      </Tunnel.Provider>
     );
   }
 }
