@@ -2,16 +2,15 @@ import { Component } from '@stencil/core';
 import Tunnel from './data-tunnel'; // Import the tunnel
 
 @Component({
-  tag: 'test-tunnel-consumer',
+  tag: 'test-message-log',
 })
-export class WayDownChild {
+export class TestMessageLog {
   render() {
     return (
       <Tunnel.Consumer>
-        {({ message, increment }) => (
+        {({ messageQueue }) => (
           <div class='app-profile'>
-            <button onClick={increment}>Increment Num</button>
-            <p>{message}</p>
+            {JSON.stringify(messageQueue)}
           </div>
         )}
       </Tunnel.Consumer>

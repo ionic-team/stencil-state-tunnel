@@ -7,26 +7,23 @@ function getUniqueId() {
 }
 
 @Component({
-  tag: 'test-tunnel-app',
+  tag: 'test-message-management',
 })
-export class TestTunnelApp {
+export class TestMessageManagement {
 
   @State() listOfReceivers = [];
   @State() messageQueue: MessageQueue = [];
 
-  addMessage = (msgText: string) => {
+  sendMessage = (msgText: string) => {
     this.messageQueue = [
       ...this.messageQueue,
       {
         id: getUniqueId(),
         timeStamp: new Date(),
-        message: msgText
+        message: msgText,
+        recipients: this.listOfReceivers
       }
     ];
-  }
-
-  removeMessage = (msgId) => {
-    this.messageQueue = this.messageQueue.filter(msg => msg.id !== msgId);
   }
 
   addReceiver = (receiverName: string) => {
@@ -44,8 +41,7 @@ export class TestTunnelApp {
     const tunnelState: TunnelState = {
       listOfReceivers: this.listOfReceivers,
       messageQueue: this.messageQueue,
-      addMessage: this.addMessage,
-      removeMessage: this.removeMessage,
+      sendMessage: this.sendMessage,
       addReceiver: this.addReceiver,
       removeReceiver: this.removeReceiver
     };
@@ -55,7 +51,9 @@ export class TestTunnelApp {
           <header>
             <h1>Message Demo App</h1>
           </header>
-          <some-child-component/>
+          <test-add-message sendMessage={this.sendMessage} />
+          <test-manage-receivers />
+          <test-message-log />
         </div>
       </Tunnel.Provider>
     );
