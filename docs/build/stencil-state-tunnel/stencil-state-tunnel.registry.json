@@ -1,0 +1,28 @@
+{
+  "namespace": "StencilStateTunnel",
+  "fsNamespace": "stencil-state-tunnel",
+  "loader": "../stencil-state-tunnel.js",
+  "global": "stencil-state-tunnel.global.js",
+  "core": "stencil-state-tunnel.8ppgzt8q.js",
+  "corePolyfilled": "stencil-state-tunnel.x6hxzsaz.js",
+  "components": {
+    "context-consumer": {
+      "$": "rvze5dxq"
+    },
+    "demo-add-receiver": {
+      "$": "s5lo9uen"
+    },
+    "demo-app": {
+      "$": "s5lo9uen"
+    },
+    "demo-manage-receivers": {
+      "$": "s5lo9uen"
+    },
+    "demo-message-log": {
+      "$": "s5lo9uen"
+    },
+    "demo-send-message": {
+      "$": "s5lo9uen"
+    }
+  }
+}

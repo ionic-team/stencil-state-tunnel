@@ -1,17 +1,18 @@
 exports.config = {
   enableCache: false,
   namespace: 'stencil-state-tunnel',
-  outputTargets:[
+  outputTargets: [
     {
       type: 'dist'
     },
     {
-      type: 'www'
+      type: 'www',
+      dir: 'docs'
     }
   ]
 };
 
 exports.devServer = {
-  root: 'www',
+  root: 'docs',
   watchGlob: '**/**'
 }
