@@ -6,13 +6,17 @@ exports.config = {
       type: 'dist'
     },
     {
+      type: 'www'
+    },
+    {
       type: 'www',
-      dir: 'docs'
+      dir: 'docs',
+      baseUrl: '/stencil-state-tunnel'
     }
   ]
 };
 
 exports.devServer = {
-  root: 'docs',
+  root: 'www',
   watchGlob: '**/**'
 }

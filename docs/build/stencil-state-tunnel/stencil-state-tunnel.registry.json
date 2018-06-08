@@ -3,8 +3,8 @@
   "fsNamespace": "stencil-state-tunnel",
   "loader": "../stencil-state-tunnel.js",
   "global": "stencil-state-tunnel.global.js",
-  "core": "stencil-state-tunnel.8ppgzt8q.js",
   "corePolyfilled": "stencil-state-tunnel.x6hxzsaz.js",
+  "core": "stencil-state-tunnel.8ppgzt8q.js",
   "components": {
     "context-consumer": {
       "$": "rvze5dxq"
