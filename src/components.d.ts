@@ -65,6 +65,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface DemoApp {
+
+    }
+  }
+
+  interface HTMLDemoAppElement extends StencilComponents.DemoApp, HTMLStencilElement {}
+
+  var HTMLDemoAppElement: {
+    prototype: HTMLDemoAppElement;
+    new (): HTMLDemoAppElement;
+  };
+  interface HTMLElementTagNameMap {
+    'demo-app': HTMLDemoAppElement;
+  }
+  interface ElementTagNameMap {
+    'demo-app': HTMLDemoAppElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'demo-app': JSXElements.DemoAppAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface DemoAppAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface DemoManageReceivers {
       'addReceiver': (receiverName: string) => void;
       'listOfReceivers': string[];
@@ -126,39 +159,6 @@ declare global {
   }
   namespace JSXElements {
     export interface DemoMessageLogAttributes extends HTMLAttributes {
-
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
-    interface DemoMessageManagement {
-
-    }
-  }
-
-  interface HTMLDemoMessageManagementElement extends StencilComponents.DemoMessageManagement, HTMLStencilElement {}
-
-  var HTMLDemoMessageManagementElement: {
-    prototype: HTMLDemoMessageManagementElement;
-    new (): HTMLDemoMessageManagementElement;
-  };
-  interface HTMLElementTagNameMap {
-    'demo-message-management': HTMLDemoMessageManagementElement;
-  }
-  interface ElementTagNameMap {
-    'demo-message-management': HTMLDemoMessageManagementElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'demo-message-management': JSXElements.DemoMessageManagementAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface DemoMessageManagementAttributes extends HTMLAttributes {
 
     }
   }

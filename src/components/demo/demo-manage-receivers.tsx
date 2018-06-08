@@ -3,6 +3,18 @@ import Tunnel from './data-tunnel'; // Import the tunnel
 
 @Component({
   tag: 'demo-manage-receivers',
+  styles: `
+    ul.receiver-list {
+      list-style: none;
+      padding-left: 10px;
+    }
+    ul.receiver-list li {
+      padding: 5px 0;
+    }
+    button.add-receiver {
+      margin-right: 5px;
+    }
+  `
 })
 export class DemoManageReceivers {
   @Element() el: HTMLStencilElement;
@@ -16,9 +28,12 @@ export class DemoManageReceivers {
         <demo-add-receiver addReceiver={this.addReceiver} listOfReceivers={this.listOfReceivers}/>
         {(this.listOfReceivers.length === 0) ?
         <p>No Receivers</p> :
-        <ul>
+        <ul class="receiver-list">
         {this.listOfReceivers.map((receiver) => (
-          <li key={receiver}>{receiver} <button onClick={() => this.removeReceiver(receiver)}>&times;</button></li>
+          <li key={receiver}>
+            <button class="add-receiver" onClick={() => this.removeReceiver(receiver)}>&times;</button>
+            {receiver}
+          </li>
         ))}
         </ul>
         }

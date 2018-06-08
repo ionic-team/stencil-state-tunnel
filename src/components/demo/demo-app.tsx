@@ -7,9 +7,16 @@ function getUniqueId() {
 }
 
 @Component({
-  tag: 'demo-message-management',
+  tag: 'demo-app',
+  styles: `
+    demo-app {
+      display: block;
+      width: 700px;
+      margin: 0 auto;
+    }
+  `
 })
-export class DemoMessageManagement {
+export class DemoApp {
 
   @State() listOfReceivers = [];
   @State() messageLog: MessageLog = [];
@@ -47,16 +54,14 @@ export class DemoMessageManagement {
     };
     return (
       <Tunnel.Provider state={tunnelState}>
-        <div>
-          <header>
-            <h1>Message Demo App</h1>
-          </header>
-          <demo-send-message
-            hasReceivers={this.listOfReceivers.length > 0}
-            sendMessage={this.sendMessage} />
-          <demo-manage-receivers />
-          <demo-message-log />
-        </div>
+        <header>
+          <h1>Message Demo App</h1>
+        </header>
+        <demo-manage-receivers />
+        <demo-send-message
+          hasReceivers={this.listOfReceivers.length > 0}
+          sendMessage={this.sendMessage} />
+        <demo-message-log />
       </Tunnel.Provider>
     );
   }

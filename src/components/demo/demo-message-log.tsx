@@ -20,6 +20,7 @@ function dateToTimestamp(d: Date) {
   styles: `
   ul.msg-list {
     list-style: none;
+    padding-left: 10px;
   }
   ul.msg-list li {
     padding: 10px 0;
@@ -33,26 +34,29 @@ function dateToTimestamp(d: Date) {
 })
 export class DemoMessageLog {
   render() {
-    return [
-      <p>Message Log:</p>,
+    return (
       <Tunnel.Consumer>
         {({ messageLog }: State) => (
           <div>
             {(messageLog.length === 0) ?
             <p>No messages sent:</p> :
             <ul class="msg-list">
-              { messageLog.map(message => (
-                <li key={message.id}>
-                  <span class="row-desc">To:</span> {message.recipients.join(', ')}<br/>
-                  <span class="row-desc">Time:</span> {dateToTimestamp(message.timeStamp)}<br/>
-                  <span class="row-desc">Text:</span> {message.message}<br/>
-                </li>
-              ))}
+              {
+                messageLog
+                .sort((a, b) => (b.timeStamp.getTime() - a.timeStamp.getTime()))
+                .map(message => (
+                  <li key={message.id}>
+                    <span class="row-desc">To:</span> {message.recipients.join(', ')}<br/>
+                    <span class="row-desc">Time:</span> {dateToTimestamp(message.timeStamp)}<br/>
+                    <span class="row-desc">Text:</span> {message.message}<br/>
+                  </li>
+                ))
+              }
             </ul>
             }
           </div>
         )}
       </Tunnel.Consumer>
-    ];
+    );
   }
 }
