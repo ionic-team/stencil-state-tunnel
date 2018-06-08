@@ -1,5 +1,5 @@
 import { Component } from '@stencil/core';
-import Tunnel, { MessageLog } from './data-tunnel'; // Import the tunnel
+import Tunnel, { State } from './data-tunnel'; // Import the tunnel
 
 function dateToTimestamp(d: Date) {
   const hours = d.getHours();
@@ -36,7 +36,7 @@ export class DemoMessageLog {
     return [
       <p>Message Log:</p>,
       <Tunnel.Consumer>
-        {({ messageLog }: {messageLog: MessageLog}) => (
+        {({ messageLog }: State) => (
           <div>
             {(messageLog.length === 0) ?
             <p>No messages sent:</p> :
