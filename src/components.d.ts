@@ -30,6 +30,179 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface DemoAddReceiver {
+      'addReceiver': (msg: string) => void;
+      'listOfReceivers': string[];
+    }
+  }
+
+  interface HTMLDemoAddReceiverElement extends StencilComponents.DemoAddReceiver, HTMLStencilElement {}
+
+  var HTMLDemoAddReceiverElement: {
+    prototype: HTMLDemoAddReceiverElement;
+    new (): HTMLDemoAddReceiverElement;
+  };
+  interface HTMLElementTagNameMap {
+    'demo-add-receiver': HTMLDemoAddReceiverElement;
+  }
+  interface ElementTagNameMap {
+    'demo-add-receiver': HTMLDemoAddReceiverElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'demo-add-receiver': JSXElements.DemoAddReceiverAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface DemoAddReceiverAttributes extends HTMLAttributes {
+      'addReceiver'?: (msg: string) => void;
+      'listOfReceivers'?: string[];
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface DemoManageReceivers {
+      'addReceiver': (receiverName: string) => void;
+      'listOfReceivers': string[];
+      'removeReceiver': (receiverName: string) => void;
+    }
+  }
+
+  interface HTMLDemoManageReceiversElement extends StencilComponents.DemoManageReceivers, HTMLStencilElement {}
+
+  var HTMLDemoManageReceiversElement: {
+    prototype: HTMLDemoManageReceiversElement;
+    new (): HTMLDemoManageReceiversElement;
+  };
+  interface HTMLElementTagNameMap {
+    'demo-manage-receivers': HTMLDemoManageReceiversElement;
+  }
+  interface ElementTagNameMap {
+    'demo-manage-receivers': HTMLDemoManageReceiversElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'demo-manage-receivers': JSXElements.DemoManageReceiversAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface DemoManageReceiversAttributes extends HTMLAttributes {
+      'addReceiver'?: (receiverName: string) => void;
+      'listOfReceivers'?: string[];
+      'removeReceiver'?: (receiverName: string) => void;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface DemoMessageLog {
+
+    }
+  }
+
+  interface HTMLDemoMessageLogElement extends StencilComponents.DemoMessageLog, HTMLStencilElement {}
+
+  var HTMLDemoMessageLogElement: {
+    prototype: HTMLDemoMessageLogElement;
+    new (): HTMLDemoMessageLogElement;
+  };
+  interface HTMLElementTagNameMap {
+    'demo-message-log': HTMLDemoMessageLogElement;
+  }
+  interface ElementTagNameMap {
+    'demo-message-log': HTMLDemoMessageLogElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'demo-message-log': JSXElements.DemoMessageLogAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface DemoMessageLogAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface DemoMessageManagement {
+
+    }
+  }
+
+  interface HTMLDemoMessageManagementElement extends StencilComponents.DemoMessageManagement, HTMLStencilElement {}
+
+  var HTMLDemoMessageManagementElement: {
+    prototype: HTMLDemoMessageManagementElement;
+    new (): HTMLDemoMessageManagementElement;
+  };
+  interface HTMLElementTagNameMap {
+    'demo-message-management': HTMLDemoMessageManagementElement;
+  }
+  interface ElementTagNameMap {
+    'demo-message-management': HTMLDemoMessageManagementElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'demo-message-management': JSXElements.DemoMessageManagementAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface DemoMessageManagementAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface DemoSendMessage {
+      'hasReceivers': boolean;
+      'sendMessage': (msg: string) => void;
+    }
+  }
+
+  interface HTMLDemoSendMessageElement extends StencilComponents.DemoSendMessage, HTMLStencilElement {}
+
+  var HTMLDemoSendMessageElement: {
+    prototype: HTMLDemoSendMessageElement;
+    new (): HTMLDemoSendMessageElement;
+  };
+  interface HTMLElementTagNameMap {
+    'demo-send-message': HTMLDemoSendMessageElement;
+  }
+  interface ElementTagNameMap {
+    'demo-send-message': HTMLDemoSendMessageElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'demo-send-message': JSXElements.DemoSendMessageAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface DemoSendMessageAttributes extends HTMLAttributes {
+      'hasReceivers'?: boolean;
+      'sendMessage'?: (msg: string) => void;
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface ContextConsumer {
       'context': { [key: string]: any };
       'renderer': any;

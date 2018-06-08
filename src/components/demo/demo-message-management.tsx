@@ -51,7 +51,9 @@ export class DemoMessageManagement {
           <header>
             <h1>Message Demo App</h1>
           </header>
-          <demo-add-message sendMessage={this.sendMessage} />
+          <demo-send-message
+            hasReceivers={this.listOfReceivers.length > 0}
+            sendMessage={this.sendMessage} />
           <demo-manage-receivers />
           <demo-message-log />
         </div>

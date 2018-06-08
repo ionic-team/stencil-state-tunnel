@@ -2,6 +2,11 @@ import { Component, Prop, State } from '@stencil/core';
 
 @Component({
   tag: 'demo-add-receiver',
+  styles: `
+    .error {
+      color: red;
+    }
+  `
 })
 export class DemoAddReceiver {
   @Prop() addReceiver: (msg: string) => void;
@@ -14,22 +19,24 @@ export class DemoAddReceiver {
     this.errorText = null;
 
     if (this.input.value === '') {
-      this.errorText = 'Message cannot be empty.';
+      this.errorText = 'Receiver name cannot be empty.';
       return;
     }
+    console.log(this.listOfReceivers);
     if (this.listOfReceivers.indexOf(this.input.value) !== -1) {
       this.errorText = 'Receiver already in the list.';
       return;
     }
 
     this.addReceiver(this.input.value)
+    this.input.value = '';
   }
 
   render() {
     return (
       <form onSubmit={this.addReceiverToList}>
         {this.errorText != null ?
-          <div class="error">{this.errorText}</div> : null
+          <p class="error">{this.errorText}</p> : null
         }
         <label>
           Receiver Name:
