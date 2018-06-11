@@ -1,10 +1,7 @@
 import { Component, State } from '@stencil/core';
-import Tunnel, { State as TunnelState, MessageLog } from './data-tunnel'; // Import the Tunnel
+import Tunnel, { State as TunnelState, MessageItem, Recipient } from './data-tunnel'; // Import the Tunnel
+import * as API from './api-util';
 
-// Unique enough for a demo
-function getUniqueId() {
-  return (Math.random() * 10e16).toString().match(/.{4}/g).join('-');
-}
 
 @Component({
   tag: 'demo-app',
@@ -18,50 +15,51 @@ function getUniqueId() {
 })
 export class DemoApp {
 
-  @State() listOfReceivers = [];
-  @State() messageLog: MessageLog = [];
+  @State() availableReceivers: Recipient[] = [];
+  @State() messageLog: MessageItem[] = [];
+  @State() creatingMessage: boolean = false;
 
-  sendMessage = (msgText: string) => {
+  sendMessage = async (msgText: string, recipients: Recipient[]) => {
+    const newMessage = await API.sendMessage(msgText, recipients);
     this.messageLog = [
       ...this.messageLog,
-      {
-        id: getUniqueId(),
-        timeStamp: new Date(),
-        message: msgText,
-        recipients: this.listOfReceivers
-      }
+      newMessage
     ];
   }
 
-  addReceiver = (receiverName: string) => {
-    this.listOfReceivers = [
-      ...this.listOfReceivers,
-      receiverName
-    ];
+  getReceiverList = async () => {
+    if (this.availableReceivers.length > 0) {
+      return this.availableReceivers;
+    }
+    return this.availableReceivers = await API.getAvailableRecipients();
   }
 
-  removeReceiver = (receiverName: string) => {
-    this.listOfReceivers = this.listOfReceivers.filter(name => name !== receiverName);
+  setCreatingMessage = (creatingMessage: boolean) => {
+    this.creatingMessage = creatingMessage;
   }
 
   render() {
     const tunnelState: TunnelState = {
-      listOfReceivers: this.listOfReceivers,
       messageLog: this.messageLog,
       sendMessage: this.sendMessage,
-      addReceiver: this.addReceiver,
-      removeReceiver: this.removeReceiver
+      getReceiverList: this.getReceiverList,
+      availableReceivers: this.availableReceivers,
+      creatingMessage: this.creatingMessage,
+      setCreatingMessage: this.setCreatingMessage
     };
     return (
       <Tunnel.Provider state={tunnelState}>
         <header>
+          {this.creatingMessage ? null : <button onClick={() => {this.creatingMessage = true}}>Create Message</button>}
           <h1>Message Demo App</h1>
         </header>
-        <demo-manage-receivers />
-        <demo-send-message
-          hasReceivers={this.listOfReceivers.length > 0}
-          sendMessage={this.sendMessage} />
-        <demo-message-log />
+        {
+          this.creatingMessage ?
+            <demo-create-message
+              sendMessage={this.sendMessage} />
+              :
+            <demo-message-log />
+        }
       </Tunnel.Provider>
     );
   }

@@ -4,24 +4,31 @@ export interface MessageItem {
   id: string,
   timeStamp: Date,
   message: string,
-  recipients: string[]
+  recipients: Recipient[]
 }
-export type MessageLog = MessageItem[];
+
+export interface Recipient {
+  id: string,
+  name: string
+}
+
 
 export interface State {
-  listOfReceivers: string[],
-  messageLog: MessageLog,
-  sendMessage: (msg: string) => void,
-  addReceiver: (receiverName: string) => void,
-  removeReceiver: (receiverName: string) => void,
+  messageLog: MessageItem[],
+  availableReceivers: Recipient[],
+  sendMessage: (msg: string, recipients: Recipient[]) => Promise<void>,
+  getReceiverList: () => Promise<Recipient[]>,
+  creatingMessage: boolean
+  setCreatingMessage: (creatingMessage: boolean) => void
 }
 
 export default createProviderConsumer<State>({
-    listOfReceivers: [],
     messageLog: [],
-    sendMessage: () => {},
-    addReceiver: () => {},
-    removeReceiver: () => {},
+    sendMessage: () => Promise.resolve(),
+    getReceiverList: () => Promise.resolve([]),
+    availableReceivers: [],
+    creatingMessage: false,
+    setCreatingMessage: () => {}
   },
   (subscribe, child) => (
     <context-consumer subscribe={subscribe} renderer={child} />

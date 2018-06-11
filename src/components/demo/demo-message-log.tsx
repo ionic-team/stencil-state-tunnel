@@ -39,14 +39,14 @@ export class DemoMessageLog {
         {({ messageLog }: State) => (
           <div>
             {(messageLog.length === 0) ?
-            <p>No messages sent:</p> :
+            <p>No messages sent.</p> :
             <ul class="msg-list">
               {
                 messageLog
                 .sort((a, b) => (b.timeStamp.getTime() - a.timeStamp.getTime()))
                 .map(message => (
                   <li key={message.id}>
-                    <span class="row-desc">To:</span> {message.recipients.join(', ')}<br/>
+                    <span class="row-desc">To:</span> {message.recipients.map(re => re.name).join(', ')}<br/>
                     <span class="row-desc">Time:</span> {dateToTimestamp(message.timeStamp)}<br/>
                     <span class="row-desc">Text:</span> {message.message}<br/>
                   </li>

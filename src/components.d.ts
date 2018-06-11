@@ -26,41 +26,9 @@ declare global {
   interface HTMLAttributes {}
 }
 
-
-declare global {
-
-  namespace StencilComponents {
-    interface DemoAddReceiver {
-      'addReceiver': (msg: string) => void;
-      'listOfReceivers': string[];
-    }
-  }
-
-  interface HTMLDemoAddReceiverElement extends StencilComponents.DemoAddReceiver, HTMLStencilElement {}
-
-  var HTMLDemoAddReceiverElement: {
-    prototype: HTMLDemoAddReceiverElement;
-    new (): HTMLDemoAddReceiverElement;
-  };
-  interface HTMLElementTagNameMap {
-    'demo-add-receiver': HTMLDemoAddReceiverElement;
-  }
-  interface ElementTagNameMap {
-    'demo-add-receiver': HTMLDemoAddReceiverElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'demo-add-receiver': JSXElements.DemoAddReceiverAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface DemoAddReceiverAttributes extends HTMLAttributes {
-      'addReceiver'?: (msg: string) => void;
-      'listOfReceivers'?: string[];
-    }
-  }
-}
-
+import {
+  Recipient,
+} from './components/demo/data-tunnel';
 
 declare global {
 
@@ -98,35 +66,35 @@ declare global {
 declare global {
 
   namespace StencilComponents {
-    interface DemoManageReceivers {
-      'addReceiver': (receiverName: string) => void;
-      'listOfReceivers': string[];
-      'removeReceiver': (receiverName: string) => void;
+    interface DemoCreateMessage {
+      'getReceiverList': () => Promise<Recipient[]>;
+      'sendMessage': (msg: string, recipients: Recipient[]) => Promise<void>;
+      'setCreatingMessage': (createMessage: boolean) => void;
     }
   }
 
-  interface HTMLDemoManageReceiversElement extends StencilComponents.DemoManageReceivers, HTMLStencilElement {}
+  interface HTMLDemoCreateMessageElement extends StencilComponents.DemoCreateMessage, HTMLStencilElement {}
 
-  var HTMLDemoManageReceiversElement: {
-    prototype: HTMLDemoManageReceiversElement;
-    new (): HTMLDemoManageReceiversElement;
+  var HTMLDemoCreateMessageElement: {
+    prototype: HTMLDemoCreateMessageElement;
+    new (): HTMLDemoCreateMessageElement;
   };
   interface HTMLElementTagNameMap {
-    'demo-manage-receivers': HTMLDemoManageReceiversElement;
+    'demo-create-message': HTMLDemoCreateMessageElement;
   }
   interface ElementTagNameMap {
-    'demo-manage-receivers': HTMLDemoManageReceiversElement;
+    'demo-create-message': HTMLDemoCreateMessageElement;
   }
   namespace JSX {
     interface IntrinsicElements {
-      'demo-manage-receivers': JSXElements.DemoManageReceiversAttributes;
+      'demo-create-message': JSXElements.DemoCreateMessageAttributes;
     }
   }
   namespace JSXElements {
-    export interface DemoManageReceiversAttributes extends HTMLAttributes {
-      'addReceiver'?: (receiverName: string) => void;
-      'listOfReceivers'?: string[];
-      'removeReceiver'?: (receiverName: string) => void;
+    export interface DemoCreateMessageAttributes extends HTMLAttributes {
+      'getReceiverList'?: () => Promise<Recipient[]>;
+      'sendMessage'?: (msg: string, recipients: Recipient[]) => Promise<void>;
+      'setCreatingMessage'?: (createMessage: boolean) => void;
     }
   }
 }
@@ -160,41 +128,6 @@ declare global {
   namespace JSXElements {
     export interface DemoMessageLogAttributes extends HTMLAttributes {
 
-    }
-  }
-}
-
-
-declare global {
-
-  namespace StencilComponents {
-    interface DemoSendMessage {
-      'hasReceivers': boolean;
-      'sendMessage': (msg: string) => void;
-    }
-  }
-
-  interface HTMLDemoSendMessageElement extends StencilComponents.DemoSendMessage, HTMLStencilElement {}
-
-  var HTMLDemoSendMessageElement: {
-    prototype: HTMLDemoSendMessageElement;
-    new (): HTMLDemoSendMessageElement;
-  };
-  interface HTMLElementTagNameMap {
-    'demo-send-message': HTMLDemoSendMessageElement;
-  }
-  interface ElementTagNameMap {
-    'demo-send-message': HTMLDemoSendMessageElement;
-  }
-  namespace JSX {
-    interface IntrinsicElements {
-      'demo-send-message': JSXElements.DemoSendMessageAttributes;
-    }
-  }
-  namespace JSXElements {
-    export interface DemoSendMessageAttributes extends HTMLAttributes {
-      'hasReceivers'?: boolean;
-      'sendMessage'?: (msg: string) => void;
     }
   }
 }
