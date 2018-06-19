@@ -265,6 +265,7 @@ class DemoCreateMessage {
             this.setCreatingMessage(false);
         };
         this.updateRecipientList = () => {
+            console.log('update');
             this.selectedReceiverIds = Array.from(this.select.querySelectorAll('option'))
                 .filter((op) => op.selected)
                 .map((op) => op.value);
@@ -280,12 +281,13 @@ class DemoCreateMessage {
         });
     }
     render() {
+        console.log('render', this.selectedReceiverIds);
         return (h("form", { onSubmit: this.sendToMessageQueue },
             this.errorText != null ?
                 h("p", { class: "error" }, this.errorText) : null,
             h("label", null,
                 "Recipients:",
-                h("select", { multiple: true, ref: (el) => this.select = el, onChange: this.updateRecipientList }, this.availableRecipients.map(recipient => (h("option", { value: recipient.id }, recipient.name))))),
+                h("select", { multiple: true, ref: (el) => this.select = el, onChange: this.updateRecipientList }, this.availableRecipients.map(recipient => (h("option", { value: recipient.id, selected: this.selectedReceiverIds.indexOf(recipient.id) !== -1 }, recipient.name))))),
             h("br", null),
             h("label", null,
                 "Message Text:",
@@ -309,6 +311,9 @@ class DemoCreateMessage {
             "type": "Any",
             "attr": "get-receiver-list"
         },
+        "selectedReceiverIds": {
+            "state": true
+        },
         "sendMessage": {
             "type": "Any",
             "attr": "send-message"
@@ -318,7 +323,7 @@ class DemoCreateMessage {
             "attr": "set-creating-message"
         }
     }; }
-    static get style() { return ""; }
+    static get style() { return ".error {\n      color: red;\n    }"; }
 }
 Tunnel.injectProps(DemoCreateMessage, ['sendMessage', 'getReceiverList', 'setCreatingMessage']);
 

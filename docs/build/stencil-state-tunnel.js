@@ -1,6 +1,6 @@
 /*!
  * Built with http://stenciljs.com
- * 2018-05-15T20:33:57
+ * 2018-05-19T18:59:57
  */
 (function(win, doc, namespace, fsNamespace, resourcesUrl, appCore, appCoreSsr, appCorePolyfilled, hydratedCssClass, components) {
 
@@ -135,4 +135,4 @@ function createComponentOnReadyPrototype(win, namespace, HTMLElementPrototype) {
 
   init(win, doc, namespace, fsNamespace, resourcesUrl, appCore, appCoreSsr, appCorePolyfilled, hydratedCssClass, components);
 
-  })(window, document, "StencilStateTunnel","stencil-state-tunnel",0,"stencil-state-tunnel.core.js","es5-build-disabled.js","hydrated",[["context-consumer","context-consumer",0,[["context",1],["el",7],["renderer",1,0,1,1],["subscribe",1],["unsubscribe",5]]],["demo-app","demo-app",1,[["availableReceivers",5],["creatingMessage",5],["messageLog",5]]],["demo-create-message","demo-app",1,[["availableRecipients",5],["el",7],["errorText",5],["getReceiverList",1],["sendMessage",1],["setCreatingMessage",1]]],["demo-message-log","demo-app",1]],HTMLElement.prototype);
+  })(window, document, "StencilStateTunnel","stencil-state-tunnel",0,"stencil-state-tunnel.core.js","es5-build-disabled.js","hydrated",[["context-consumer","context-consumer",0,[["context",1],["el",7],["renderer",1,0,1,1],["subscribe",1],["unsubscribe",5]]],["demo-app","demo-app",1,[["availableReceivers",5],["creatingMessage",5],["messageLog",5]]],["demo-create-message","demo-app",1,[["availableRecipients",5],["el",7],["errorText",5],["getReceiverList",1],["selectedReceiverIds",5],["sendMessage",1],["setCreatingMessage",1]]],["demo-message-log","demo-app",1]],HTMLElement.prototype);

@@ -16,11 +16,11 @@ export class DemoCreateMessage {
   @Prop() setCreatingMessage: (createMessage: boolean) => void;
 
   @State() availableRecipients: Recipient[] = [];
+  @State() selectedReceiverIds: string[] = [];
   @State() errorText: string;
 
   input: HTMLInputElement;
   select: HTMLSelectElement;
-  selectedReceiverIds: string[] = [];
 
   async componentWillLoad() {
     this.availableRecipients = await this.getReceiverList();
@@ -46,6 +46,7 @@ export class DemoCreateMessage {
   }
 
   updateRecipientList = () => {
+    console.log('update');
     this.selectedReceiverIds = Array.from(this.select.querySelectorAll('option'))
       .filter((op: HTMLOptionElement) => op.selected)
       .map((op: HTMLOptionElement) => op.value);
@@ -57,6 +58,7 @@ export class DemoCreateMessage {
   }
 
   render() {
+    console.log('render', this.selectedReceiverIds);
     return (
       <form onSubmit={this.sendToMessageQueue}>
         {this.errorText != null ?
@@ -66,7 +68,7 @@ export class DemoCreateMessage {
           Recipients:
           <select multiple ref={(el: HTMLSelectElement) => this.select = el} onChange={this.updateRecipientList}>
           {this.availableRecipients.map(recipient => (
-            <option value={recipient.id}>{recipient.name}</option>
+            <option value={recipient.id} selected={this.selectedReceiverIds.indexOf(recipient.id) !== -1}>{recipient.name}</option>
           ))}
           </select>
         </label><br/>
