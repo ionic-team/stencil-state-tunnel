@@ -83,4 +83,4 @@ export class DemoCreateMessage {
   }
 }
 
-Tunnel.injectProps(DemoCreateMessage, ['sendMessage', 'getReceiverList', 'creatingMessage', 'setCreatingMessage'])
+Tunnel.injectProps(DemoCreateMessage, ['sendMessage', 'getReceiverList', 'setCreatingMessage']);

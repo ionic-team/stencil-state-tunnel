@@ -1,4 +1,3 @@
-
 function defaultConsumerRender(subscribe, child) {
   return <context-consumer
     subscribe={subscribe}
@@ -7,7 +6,7 @@ function defaultConsumerRender(subscribe, child) {
 }
 
 export function createProviderConsumer<T extends object>(defaultState: T, consumerRender = defaultConsumerRender) {
-  type PropList = (keyof T)[] | string;
+  type PropList = (keyof T)[];
 
   let listeners: Map<HTMLStencilElement, PropList> = new Map();
   let currentState: T = defaultState;
@@ -96,10 +95,43 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
     }
   }
 
+  /*
+  function Props(fieldList: PropList) {
+
+    return (childComponent: any) => {
+      let unsubscribe: any = null;
+
+      const elementRefName = Object.keys(childComponent.properties).find(propName => {
+        return childComponent.properties[propName].elementRef == true;
+      });
+      if (elementRefName == undefined) {
+        throw new Error(`Please ensure that your Component ${childComponent.is} has an attribtue with "@Element" decorator. ` +
+          `This is required to be able to inject properties.`);
+      }
+
+      const prevComponentWillLoad = childComponent.prototype.componentWillLoad;
+      childComponent.prototype.componentWillLoad = function() {
+        unsubscribe = subscribe(this[elementRefName], fieldList);
+        if (prevComponentWillLoad) {
+          return prevComponentWillLoad.bind(this)();
+        }
+      }
+
+      const prevComponentDidUnload = childComponent.prototype.componentDidUnload;
+      childComponent.prototype.componentDidUnload = function() {
+        unsubscribe();
+        if (prevComponentDidUnload) {
+          return prevComponentDidUnload.bind(this)();
+        }
+      }
+    };
+  }
+  */
+
   return {
     Provider,
     Consumer,
     wrapConsumer,
     injectProps
-  };
+  }
 }
