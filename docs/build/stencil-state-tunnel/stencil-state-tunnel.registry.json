@@ -17,6 +17,9 @@
     },
     "demo-message-log": {
       "$": "demo-app"
+    },
+    "demo-multi-select": {
+      "$": "demo-app"
     }
   }
 }

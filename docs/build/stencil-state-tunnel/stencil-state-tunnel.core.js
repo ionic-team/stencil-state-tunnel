@@ -28,11 +28,23 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
     'right': 39,
     'down': 40
   };
-  function initStyleTemplate(domApi, cmpMeta, cmpConstructor) {
-    const style = cmpConstructor.style;
+  function getScopeId(cmpMeta, mode) {
+    const id = `data-${cmpMeta.tagNameMeta}`;
+    if (mode && mode !== DEFAULT_STYLE_MODE) {
+      return `${id}-${mode}`;
+    }
+    return id;
+  }
+  function getHostScopeAttribute(scopeId) {
+    return `${scopeId}-host`;
+  }
+  function getSlotScopeAttribute(scopeId) {
+    return `${scopeId}-slot`;
+  }
+  function initStyleTemplate(domApi, cmpMeta, encapsulation, style, styleMode) {
     if (style) {
       // we got a style mode for this component, let's create an id for this style
-      const styleModeId = cmpConstructor.is + (cmpConstructor.styleMode || DEFAULT_STYLE_MODE);
+      const styleModeId = cmpMeta.tagNameMeta + (styleMode || DEFAULT_STYLE_MODE);
       if (!cmpMeta[styleModeId]) {
         false;
         {
@@ -47,25 +59,48 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
           // Constructor using the style mode id as the key
                     cmpMeta[styleModeId] = templateElm;
           // add the style text to the template element's innerHTML
-                    // add a style id attribute, but only useful during dev
-          domApi.$setAttribute(templateElm, 'data-tmpl-style-id', styleModeId);
-          templateElm.innerHTML = `<style data-style-id="${styleModeId}">${style}</style>`;
+                    {
+            // hot module replacement enabled
+            // add a style id attribute, but only useful during dev
+            const styleContent = [ '<style', ` data-style-tag="${cmpMeta.tagNameMeta}"` ];
+            domApi.$setAttribute(templateElm, 'data-tmpl-style-tag', cmpMeta.tagNameMeta);
+            if (styleMode) {
+              styleContent.push(` data-style-mode="${styleMode}"`);
+              domApi.$setAttribute(templateElm, 'data-tmpl-style-mode', styleMode);
+            }
+            if (2 /* ScopedCss */ === encapsulation || 1 /* ShadowDom */ === encapsulation && !domApi.$supportsShadowDom) {
+              styleContent.push(' data-style-scoped="true"');
+              domApi.$setAttribute(templateElm, 'data-tmpl-style-scoped', 'true');
+            }
+            styleContent.push('>');
+            styleContent.push(style);
+            styleContent.push('</style>');
+            templateElm.innerHTML = styleContent.join('');
+          }
           // add our new template element to the head
           // so it can be cloned later
-          domApi.$appendChild(domApi.$head, templateElm);
+                    domApi.$appendChild(domApi.$head, templateElm);
         }
       }
     }
   }
-  function attachStyles(plt, domApi, cmpMeta, modeName, elm, customStyle, styleElm) {
+  function attachStyles(plt, domApi, cmpMeta, hostElm) {
     // first see if we've got a style for a specific mode
-    let styleModeId = cmpMeta.tagNameMeta + (modeName || DEFAULT_STYLE_MODE);
-    let styleTemplate = cmpMeta[styleModeId];
+    const encapsulation = cmpMeta.encapsulation;
+    (2 /* ScopedCss */ === encapsulation || 1 /* ShadowDom */ === encapsulation && !plt.domApi.$supportsShadowDom) && (
+    // either this host element should use scoped css
+    // or it wants to use shadow dom but the browser doesn't support it
+    // create a scope id which is useful for scoped css
+    // and add the scope attribute to the host
+    hostElm['s-sc'] = getScopeId(cmpMeta, hostElm.mode));
+    // create the style id w/ the host element's mode
+        let styleId = cmpMeta.tagNameMeta + hostElm.mode;
+    let styleTemplate = cmpMeta[styleId];
     if (!styleTemplate) {
-      // didn't find a style for this mode
-      // now let's check if there's a default style for this component
-      styleModeId = cmpMeta.tagNameMeta + DEFAULT_STYLE_MODE;
-      styleTemplate = cmpMeta[styleModeId];
+      // doesn't look like there's a style template with the mode
+      // create the style id using the default style mode and try again
+      styleId = cmpMeta.tagNameMeta + DEFAULT_STYLE_MODE;
+      styleTemplate = cmpMeta[styleId];
     }
     if (styleTemplate) {
       // cool, we found a style template element for this component
@@ -73,17 +108,18 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       // if this browser supports shadow dom, then let's climb up
       // the dom and see if we're within a shadow dom
             if (domApi.$supportsShadowDom) {
-        if (1 /* ShadowDom */ === cmpMeta.encapsulation) {
+        if (1 /* ShadowDom */ === encapsulation) {
           // we already know we're in a shadow dom
           // so shadow root is the container for these styles
-          styleContainerNode = elm.shadowRoot;
+          styleContainerNode = hostElm.shadowRoot;
         } else {
           // climb up the dom and see if we're in a shadow dom
-          while (elm = domApi.$parentNode(elm)) {
-            if (elm.host && elm.host.shadowRoot) {
+          let root = hostElm;
+          while (root = domApi.$parentNode(root)) {
+            if (root.host && root.host.shadowRoot) {
               // looks like we are in shadow dom, let's use
               // this shadow root as the container for these styles
-              styleContainerNode = elm.host.shadowRoot;
+              styleContainerNode = root.host.shadowRoot;
               break;
             }
           }
@@ -92,20 +128,24 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       // if this container element already has these styles
       // then there's no need to apply them again
       // create an object to keep track if we'ready applied this component style
-            const appliedStyles = plt.componentAppliedStyles.get(styleContainerNode) || {};
-      if (!appliedStyles[styleModeId]) {
+            let appliedStyles = plt.componentAppliedStyles.get(styleContainerNode);
+      appliedStyles || plt.componentAppliedStyles.set(styleContainerNode, appliedStyles = {});
+      // check if we haven't applied these styles to this container yet
+            if (!appliedStyles[styleId]) {
+        let styleElm;
         false;
-        // this browser supports the <template> element
-        // and all its native content.cloneNode() goodness
-        // clone the template element to create a new <style> element
-        styleElm = styleTemplate.content.cloneNode(true);
-        // let's make sure we put the styles below the <style data-styles> element
-        // so any visibility css overrides the default
-        const dataStyles = styleContainerNode.querySelectorAll('[data-styles]');
-        domApi.$insertBefore(styleContainerNode, styleElm, dataStyles.length && dataStyles[dataStyles.length - 1].nextSibling || styleContainerNode.firstChild);
-        // remember we don't need to do this again for this element
-                appliedStyles[styleModeId] = true;
-        plt.componentAppliedStyles.set(styleContainerNode, appliedStyles);
+        {
+          // this browser supports the <template> element
+          // and all its native content.cloneNode() goodness
+          // clone the template element to create a new <style> element
+          styleElm = styleTemplate.content.cloneNode(true);
+          // remember we don't need to do this again for this element
+                    appliedStyles[styleId] = true;
+          // let's make sure we put the styles below the <style data-styles> element
+          // so any visibility css overrides the default
+                    const dataStyles = styleContainerNode.querySelectorAll('[data-styles]');
+          domApi.$insertBefore(styleContainerNode, styleElm, dataStyles.length && dataStyles[dataStyles.length - 1].nextSibling || styleContainerNode.firstChild);
+        }
       }
     }
   }
@@ -148,6 +188,7 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       $setAttributeNS: (elm, namespaceURI, qualifiedName, val) => elm.setAttributeNS(namespaceURI, qualifiedName, val),
       $removeAttribute: (elm, key) => elm.removeAttribute(key),
       $hasAttribute: (elm, key) => elm.hasAttribute(key),
+      $getMode: elm => elm.getAttribute('mode') || (App.Context || {}).mode,
       $elementRef: (elm, referenceName) => {
         if ('child' === referenceName) {
           return elm.firstElementChild;
@@ -578,6 +619,18 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       let rootElm;
       reflectHostAttr = reflectInstanceValuesToHostAttributes(cmpMeta.componentConstructor.properties, instance);
       rootElm = useNativeShadowDom ? hostElm.shadowRoot : hostElm;
+      if (!hostElm['s-rn']) {
+        // attach the styles this component needs, if any
+        // this fn figures out if the styles should go in a
+        // shadow root or if they should be global
+        plt.attachStyles(plt, plt.domApi, cmpMeta, hostElm);
+        // if no render function
+                const scopeId = hostElm['s-sc'];
+        if (scopeId) {
+          plt.domApi.$setAttribute(hostElm, getHostScopeAttribute(scopeId), '');
+          instance.render || plt.domApi.$setAttribute(hostElm, getSlotScopeAttribute(scopeId), '');
+        }
+      }
       if (instance.render || instance.hostData || hostMeta || reflectHostAttr) {
         // tell the platform we're actively rendering
         // if a value is changed within a render() then
@@ -625,12 +678,10 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
         // kick off the actual render and any DOM updates
         plt.vnodeMap.set(hostElm, plt.render(hostElm, oldVNode, hostVNode, useNativeShadowDom, encapsulation));
       }
-      // attach the styles this component needs, if any
-      // this fn figures out if the styles should go in a
-      // shadow root or if they should be global
-      plt.attachStyles(plt, plt.domApi, cmpMeta, instance.mode, hostElm);
+      // update styles!
+            plt.customStyle && plt.customStyle.updateHost(hostElm);
       // it's official, this element has rendered
-      hostElm['s-rn'] = true;
+            hostElm['s-rn'] = true;
       hostElm.$onRender && (
       // $onRender deprecated 2018-04-02
       hostElm['s-rc'] = hostElm.$onRender);
@@ -817,7 +868,8 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
           void 0 === values[memberName] && (values[memberName] = parsePropertyValue(property.type, elm[memberName]));
           // for the client only, let's delete its "own" property
           // this way our already assigned getter/setter on the prototype kicks in
-                    delete elm[memberName];
+          // the very special case is to NOT do this for "mode"
+                    'mode' !== memberName && delete elm[memberName];
         }
       }
       instance.hasOwnProperty(memberName) && void 0 === values[memberName] && (
@@ -1140,7 +1192,7 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       // $defaultHolder deprecated 2018-04-02
       const contentRef = parentElm['s-cr'] || parentElm.$defaultHolder;
       containerElm = contentRef && domApi.$parentNode(contentRef) || parentElm;
-      containerElm.shadowRoot && (containerElm = containerElm.shadowRoot);
+      containerElm.shadowRoot && domApi.$tagName(containerElm) === hostTagName && (containerElm = containerElm.shadowRoot);
       for (;startIdx <= endIdx; ++startIdx) {
         if (vnodes[startIdx]) {
           childNode = isDef(vnodes[startIdx].vtext) ? domApi.$createTextNode(vnodes[startIdx].vtext) : createElm(null, parentVNode, startIdx, parentElm);
@@ -1866,6 +1918,16 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
     }
   }
   function initHostSnapshot(domApi, cmpMeta, hostElm, hostSnapshot, attribName) {
+    // the host element has connected to the dom
+    // and we've waited a tick to make sure all frameworks
+    // have finished adding attributes and child nodes to the host
+    // before we go all out and hydrate this beast
+    // let's first take a snapshot of its original layout before render
+    hostElm.mode || (
+    // looks like mode wasn't set as a property directly yet
+    // first check if there's an attribute
+    // next check the app's global
+    hostElm.mode = domApi.$getMode(hostElm));
     // if the slot polyfill is required we'll need to put some nodes
     // in here to act as original content anchors as we move nodes around
     // host element has been connected to the DOM
@@ -1887,18 +1949,13 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       // do an extra check here, but only for dev mode on the client
       'shadowRoot' in HTMLElement.prototype || (hostElm.shadowRoot = hostElm);
     }
-    (2 /* ScopedCss */ === cmpMeta.encapsulation || 1 /* ShadowDom */ === cmpMeta.encapsulation && !domApi.$supportsShadowDom) && 
-    // either this host element should use scoped css
-    // or it wants to use shadow dom but the browser doesn't support it
-    // create a scope id which is useful for scoped css
-    // and add the scope attribute to the host
-    domApi.$setAttribute(hostElm, (hostElm['s-sc'] = 'data-' + cmpMeta.tagNameMeta) + '-host', '');
-    if (1 /* ShadowDom */ === cmpMeta.encapsulation && domApi.$supportsShadowDom) {
-      hostElm.shadowRoot && console.error(`shadowRoot already attached to: ${cmpMeta.tagNameMeta}`);
-      domApi.$attachShadow(hostElm, {
-        mode: 'open'
-      });
-    }
+    1 /* ShadowDom */ === cmpMeta.encapsulation && domApi.$supportsShadowDom && !hostElm.shadowRoot && 
+    // this component is using shadow dom
+    // and this browser supports shadow dom
+    // add the read-only property "shadowRoot" to the host element
+    domApi.$attachShadow(hostElm, {
+      mode: 'open'
+    });
     // create a host snapshot object we'll
     // use to store all host data about to be read later
     hostSnapshot = {
@@ -1941,10 +1998,12 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       // ensure the "mode" attribute has been added to the element
       // place in high priority since it's not much work and we need
       // to know as fast as possible, but still an async tick in between
-            plt.queue.tick(() => 
-      // start loading this component mode's bundle
-      // if it's already loaded then the callback will be synchronous
-      plt.requestBundle(cmpMeta, elm, initHostSnapshot(plt.domApi, cmpMeta, elm)));
+            plt.queue.tick(() => {
+        // start loading this component mode's bundle
+        // if it's already loaded then the callback will be synchronous
+        plt.hostSnapshotMap.set(elm, initHostSnapshot(plt.domApi, cmpMeta, elm));
+        plt.requestBundle(cmpMeta, elm);
+      });
     }
   }
   function registerWithParentComponent(plt, elm, ancestorHostElement) {
@@ -1971,7 +2030,7 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       }
     }
   }
-  function disconnectedCallback(plt, elm, instance) {
+  function disconnectedCallback(plt, elm) {
     // only disconnect if we're not temporarily disconnected
     // tmpDisconnected will happen when slot nodes are being relocated
     if (!plt.tmpDisconnected && isDisconnected(plt.domApi, elm)) {
@@ -1990,16 +2049,20 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       // remove all of this element's event, which is good
             plt.domApi.$removeEventListener(elm);
       plt.hasListenersMap.delete(elm);
-      // call instance componentDidUnload
-      // if we've created an instance for this
-      instance = plt.instanceMap.get(elm);
-      instance && 
-      // call the user's componentDidUnload if there is one
-      instance.componentDidUnload && instance.componentDidUnload();
+      {
+        // call instance componentDidUnload
+        // if we've created an instance for this
+        const instance = plt.instanceMap.get(elm);
+        instance && 
+        // call the user's componentDidUnload if there is one
+        instance.componentDidUnload && instance.componentDidUnload();
+      }
+      // clear CSS var-shim tracking
+            plt.customStyle && plt.customStyle.removeHost(elm);
       // clear any references to other elements
       // more than likely we've already deleted these references
       // but let's double check there pal
-      [ plt.ancestorHostElementMap, plt.onReadyCallbacksMap, plt.hostSnapshotMap ].forEach(wm => wm.delete(elm));
+            [ plt.ancestorHostElementMap, plt.onReadyCallbacksMap, plt.hostSnapshotMap ].forEach(wm => wm.delete(elm));
     }
   }
   function isDisconnected(domApi, elm) {
@@ -2009,6 +2072,20 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
       }
       elm = domApi.$parentNode(elm);
     }
+  }
+  function initComponentHmr(plt, cmpMeta, elm, hmrVersionId) {
+    // keep the existing state
+    // forget the constructor
+    cmpMeta.componentConstructor = null;
+    // forget the instance
+        const instance = plt.instanceMap.get(elm);
+    if (instance) {
+      plt.hostElementMap.delete(instance);
+      plt.instanceMap.delete(elm);
+    }
+    plt.hostSnapshotMap.set(elm, initHostSnapshot(plt.domApi, cmpMeta, elm));
+    // request the bundle again
+        plt.requestBundle(cmpMeta, elm, hmrVersionId);
   }
   function proxyHostElementPrototype(plt, membersMeta, hostPrototype) {
     false;
@@ -2052,6 +2129,9 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
     HostElementConstructor['s-init'] = function() {
       initComponentLoaded(plt, this, hydratedCssClass);
     };
+    HostElementConstructor['s-hmr'] = function(hmrVersionId) {
+      initComponentHmr(plt, cmpMeta, this, hmrVersionId);
+    };
     HostElementConstructor.forceUpdate = function() {
       queueUpdate(plt, this);
     };
@@ -2081,7 +2161,7 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
     }
     return ctrlElm.componentOnReady();
   }
-  function createPlatformMain(namespace, Context, win, doc, resourcesUrl, hydratedCssClass, customStyle) {
+  function createPlatformMain(namespace, Context, win, doc, resourcesUrl, hydratedCssClass) {
     const cmpRegistry = {
       'html': {}
     };
@@ -2153,7 +2233,6 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
     // if the HTML was generated from SSR
     // then let's walk the tree and generate vnodes out of the data
     createVNodesFromSsr(plt, domApi, rootElm);
-    customStyle && customStyle.init();
     function defineComponent(cmpMeta, HostElementConstructor) {
       if (!win.customElements.get(cmpMeta.tagNameMeta)) {
         // define the custom element
@@ -2175,13 +2254,7 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
         win.customElements.define(cmpMeta.tagNameMeta, HostElementConstructor);
       }
     }
-    function requestBundle(cmpMeta, elm) {
-      // set the "mode" property
-      elm.mode || (
-      // looks like mode wasn't set as a property directly yet
-      // first check if there's an attribute
-      // next check the app's global
-      elm.mode = domApi.$getAttribute(elm, 'mode') || Context.mode);
+    function requestBundle(cmpMeta, elm, hmrVersionId) {
       if (cmpMeta.componentConstructor) {
         // we're already all loaded up :)
         queueUpdate(plt, elm);
@@ -2195,7 +2268,8 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
           // through standardized browser APIs
           const bundleId = 'string' === typeof cmpMeta.bundleIds ? cmpMeta.bundleIds : cmpMeta.bundleIds[elm.mode];
           const useScopedCss = 2 /* ScopedCss */ === cmpMeta.encapsulation || 1 /* ShadowDom */ === cmpMeta.encapsulation && !domApi.$supportsShadowDom;
-          const url = resourcesUrl + bundleId + (useScopedCss ? '.sc' : '') + '.js';
+          let url = resourcesUrl + bundleId + (useScopedCss ? '.sc' : '') + '.js';
+          hmrVersionId && (url += '?s-hmr=' + hmrVersionId);
           // dynamic es module import() => woot!
                     import(url).then(importedModule => {
             // async loading of the module is done
@@ -2203,7 +2277,8 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
               // get the component constructor from the module
               // initialize this component constructor's styles
               // it is possible for the same component to have difficult styles applied in the same app
-              initStyleTemplate(domApi, cmpMeta, cmpMeta.componentConstructor = importedModule[dashToPascalCase(cmpMeta.tagNameMeta)]);
+              cmpMeta.componentConstructor = importedModule[dashToPascalCase(cmpMeta.tagNameMeta)];
+              initStyleTemplate(domApi, cmpMeta, cmpMeta.encapsulation, cmpMeta.componentConstructor.style, cmpMeta.componentConstructor.styleMode);
             } catch (e) {
               // oh man, something's up
               console.error(e);
@@ -2217,8 +2292,8 @@ s=document.querySelector("script[data-namespace='stencil-state-tunnel']");if(s){
         }
       }
     }
-    plt.attachStyles = ((plt, domApi, cmpMeta, modeName, elm) => {
-      attachStyles(plt, domApi, cmpMeta, modeName, elm, customStyle);
+    plt.attachStyles = ((plt, domApi, cmpMeta, elm) => {
+      attachStyles(plt, domApi, cmpMeta, elm);
     });
     generateDevInspector(App, namespace, win, plt);
     true;

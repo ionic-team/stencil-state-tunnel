@@ -28,6 +28,9 @@ declare global {
 import {
   Recipient,
 } from './components/demo/data-tunnel';
+import {
+  Options,
+} from './components/demo/multi-select/demo-multi-select';
 
 declare global {
 
@@ -127,6 +130,42 @@ declare global {
   namespace JSXElements {
     export interface DemoMessageLogAttributes extends HTMLAttributes {
 
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface DemoMultiSelect {
+      'isDisabled': boolean;
+      'options': Options;
+    }
+  }
+
+  interface HTMLDemoMultiSelectElement extends StencilComponents.DemoMultiSelect, HTMLStencilElement {}
+
+  var HTMLDemoMultiSelectElement: {
+    prototype: HTMLDemoMultiSelectElement;
+    new (): HTMLDemoMultiSelectElement;
+  };
+  interface HTMLElementTagNameMap {
+    'demo-multi-select': HTMLDemoMultiSelectElement;
+  }
+  interface ElementTagNameMap {
+    'demo-multi-select': HTMLDemoMultiSelectElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'demo-multi-select': JSXElements.DemoMultiSelectAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface DemoMultiSelectAttributes extends HTMLAttributes {
+      'isDisabled'?: boolean;
+      'onSelectionMade'?: (event: CustomEvent<string[]>) => void;
+      'options'?: Options;
     }
   }
 }

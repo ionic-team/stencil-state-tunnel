@@ -1,5 +1,6 @@
 import { Component, Prop, State, Element } from '@stencil/core';
 import Tunnel, { Recipient } from './data-tunnel';
+import { Options } from './multi-select/demo-multi-select';
 
 @Component({
   tag: 'demo-create-message',
@@ -58,7 +59,13 @@ export class DemoCreateMessage {
   }
 
   render() {
-    console.log('render', this.selectedReceiverIds);
+    const options = this.availableRecipients.reduce((all, rec) => {
+      return {
+        [rec.name]: rec.id,
+        ...all
+      }
+    }, [] as Options);
+
     return (
       <form onSubmit={this.sendToMessageQueue}>
         {this.errorText != null ?
@@ -66,11 +73,7 @@ export class DemoCreateMessage {
         }
         <label>
           Recipients:
-          <select multiple ref={(el: HTMLSelectElement) => this.select = el} onChange={this.updateRecipientList}>
-          {this.availableRecipients.map(recipient => (
-            <option value={recipient.id} selected={this.selectedReceiverIds.indexOf(recipient.id) !== -1}>{recipient.name}</option>
-          ))}
-          </select>
+          <demo-multi-select options={options} onSelectionMade={(ev) => this.selectedReceiverIds = ev.detail}/>
         </label><br/>
         <label>
           Message Text:

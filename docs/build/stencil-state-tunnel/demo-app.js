@@ -281,13 +281,15 @@ class DemoCreateMessage {
         });
     }
     render() {
-        console.log('render', this.selectedReceiverIds);
+        const options = this.availableRecipients.reduce((all, rec) => {
+            return Object.assign({ [rec.name]: rec.id }, all);
+        }, []);
         return (h("form", { onSubmit: this.sendToMessageQueue },
             this.errorText != null ?
                 h("p", { class: "error" }, this.errorText) : null,
             h("label", null,
                 "Recipients:",
-                h("select", { multiple: true, ref: (el) => this.select = el, onChange: this.updateRecipientList }, this.availableRecipients.map(recipient => (h("option", { value: recipient.id, selected: this.selectedReceiverIds.indexOf(recipient.id) !== -1 }, recipient.name))))),
+                h("demo-multi-select", { options: options, onSelectionMade: (ev) => this.selectedReceiverIds = ev.detail })),
             h("br", null),
             h("label", null,
                 "Message Text:",
@@ -362,4 +364,269 @@ class DemoMessageLog {
     static get style() { return "ul.msg-list {\n    list-style: none;\n    padding-left: 10px;\n  }\n  ul.msg-list li {\n    padding: 10px 0;\n  }\n  .row-desc {\n    display: inline-block;\n    font-weight: bold;\n    width: 45px;\n  }"; }
 }
 
-export { DemoApp, DemoCreateMessage, DemoMessageLog };
+function mouseDown() {
+    if (this.isDisabled) {
+        return;
+    }
+    this.showingResults = true;
+}
+function mouseUp(ev) {
+    // Selection was made reset.
+    if (!this.isDisabled && ev.target.nodeName === "ABBR") {
+        this.showingResults = false;
+    }
+}
+function mouseEnter() {
+    this.mouseOnContainer = true;
+}
+function mouseLeave() {
+    this.mouseOnContainer = false;
+}
+
+function mouseUp$1(ev) {
+    const target = ev.target;
+    if (target) {
+        this.resultHighlight = target;
+        this.selectedOptions = this.selectedOptions.concat(target.dataset.value);
+        this.searchField.focus();
+    }
+}
+function mouseOver(ev) {
+    const target = ev.target;
+    if (target) {
+        this.highlightedResultOption = target.dataset.value;
+    }
+}
+function mouseOut(ev) {
+    if (ev.target.classList.contains("active-result") || ev.target.closest('.active-result')) {
+        this.highlightedResultOption = null;
+    }
+}
+function mouseWheel(ev) {
+    let delta = ev.deltaY || -ev.wheelDelta || ev.detail;
+    if (delta) {
+        ev.preventDefault();
+        if (ev.type === 'DOMMouseScroll') {
+            delta = delta * 40;
+        }
+        this.searchResults.scrollTop = delta + this.searchResults.scrollTop;
+    }
+}
+function touchStart(ev) {
+    this.touchStarted = true;
+    mouseOver.call(this, ev);
+}
+function touchMove(ev) {
+    this.touchStarted = false;
+    mouseOut.call(this, ev);
+}
+function touchEnd(ev) {
+    if (this.touchStarted) {
+        mouseUp$1.call(this, ev);
+    }
+}
+
+var Key;
+(function (Key) {
+    Key[Key["Backspace"] = 8] = "Backspace";
+    Key[Key["Enter"] = 13] = "Enter";
+    Key[Key["Escape"] = 27] = "Escape";
+    Key[Key["Tab"] = 9] = "Tab";
+    Key[Key["Shift"] = 16] = "Shift";
+    Key[Key["Ctrl"] = 17] = "Ctrl";
+    Key[Key["Alt"] = 18] = "Alt";
+    Key[Key["UpArrow"] = 38] = "UpArrow";
+    Key[Key["DownArrow"] = 40] = "DownArrow";
+    Key[Key["LeftWindowKey"] = 91] = "LeftWindowKey";
+    Key[Key["Space"] = 32] = "Space";
+})(Key || (Key = {}));
+function keyUpChecker(ev) {
+    const stroke = ev.which || ev.keyCode;
+    switch (stroke) {
+        case Key.Enter: // enter
+            ev.preventDefault();
+            if (this.showingResults && this.resultHighlight) {
+                this.selectedOptions = this.selectedOptions.concat(this.resultHighlight.dataset.value);
+            }
+            break;
+        case Key.Escape:
+            this.showingResults = false;
+            break;
+        case Key.Tab:
+        case Key.Shift:
+        case Key.Ctrl:
+        case Key.Alt:
+        case Key.UpArrow:
+        case Key.DownArrow:
+        case Key.LeftWindowKey:
+            break;
+        default:
+            this.inputValue = this.searchField.value;
+    }
+}
+function keyDownChecker(ev) {
+    const stroke = ev.which || ev.keyCode;
+    switch (stroke) {
+        case Key.Tab:
+            this.mouseOnContainer = false;
+            break;
+        case Key.Enter:
+        case Key.Escape:
+            if (this.showingResults) {
+                ev.preventDefault();
+            }
+            break;
+        case Key.UpArrow:
+            ev.preventDefault();
+            keyUpArrow.call(this);
+            break;
+        case Key.DownArrow:
+            keyDownArrow.call(this);
+            break;
+    }
+}
+function inputFocus() {
+    if (!this.activeField) {
+        return;
+    }
+    setTimeout(() => this.hostEvents.onMouseDown(), 50);
+}
+function inputBlur() {
+    if (!this.mouseOnContainer) {
+        this.activeField = false;
+    }
+    setTimeout(() => blurTest.call(this), 100);
+}
+function clipboardEventChecker() {
+    if (this.isDisabled) {
+        return;
+    }
+    setTimeout(() => this.inputValue = this.searchField.value, 50);
+}
+function blurTest() {
+    this.showingResults = false;
+}
+function keyUpArrow() {
+    if (!this.showingResults) {
+        return this.showingResults = true;
+    }
+    if (this.highlightedResultOption) {
+        const currentHighlightOptionIndex = this.searchResultOptions.findIndex(sro => sro[1] === this.highlightedResultOption);
+        let highlightIndex = currentHighlightOptionIndex - 1;
+        highlightIndex = (highlightIndex > 0) ? highlightIndex : 0;
+        this.highlightedResultOption = this.searchResultOptions[highlightIndex][1];
+    }
+}
+function keyDownArrow() {
+    if (this.showingResults && this.highlightedResultOption) {
+        const currentHighlightOptionIndex = this.searchResultOptions.findIndex(sro => sro[1] === this.highlightedResultOption);
+        let highlightIndex = currentHighlightOptionIndex + 1;
+        highlightIndex = (this.searchResultOptions.length > highlightIndex) ? highlightIndex : currentHighlightOptionIndex;
+        this.highlightedResultOption = this.searchResultOptions[highlightIndex][1];
+    }
+    else {
+        this.showingResults = true;
+    }
+}
+
+class DemoMultiSelect {
+    constructor() {
+        this.isDisabled = false;
+        this.selectedOptions = [];
+        this.inputValue = '';
+        this.showingResults = false;
+        this.activeField = false;
+        this.touchStarted = false;
+        this.mouseOnContainer = false;
+        this.hostEvents = {
+            onTouchStart: mouseDown.bind(this),
+            onTouchEnd: mouseUp.bind(this),
+            onMouseDown: mouseDown.bind(this),
+            onMouseUp: mouseUp.bind(this),
+            onMouseEnter: mouseEnter.bind(this),
+            onMouseLeave: mouseLeave.bind(this)
+        };
+        this.searchResultEvents = {
+            onMouseUp: mouseUp$1.bind(this),
+            onMouseOver: mouseOver.bind(this),
+            onMouseOut: mouseOut.bind(this),
+            onMouseWheel: mouseWheel.bind(this),
+            onScroll: mouseWheel.bind(this),
+            onTouchStart: touchStart.bind(this),
+            onTouchMove: touchMove.bind(this),
+            onTouchEnd: touchEnd.bind(this)
+        };
+        this.inputEvents = {
+            onBlur: inputBlur.bind(this),
+            onKeyUp: keyUpChecker.bind(this),
+            onKeyDown: keyDownChecker.bind(this),
+            onFocus: inputFocus.bind(this),
+            onCut: clipboardEventChecker.bind(this),
+            onPaste: clipboardEventChecker.bind(this)
+        };
+    }
+    updatedSelection() {
+        this.selectionMade.emit(this.selectedOptions);
+    }
+    hostData() {
+        return this.hostEvents;
+    }
+    componentWillUpdate() {
+        this.searchResultOptions = Object.keys(this.options)
+            .filter((optionName) => (!!this.inputValue || optionName.includes(this.inputValue)))
+            .map(optionName => [optionName, this.options[optionName]]);
+    }
+    render() {
+        let searchResults = null;
+        let selectedResults = null;
+        if (this.showingResults) {
+            searchResults = (h("div", Object.assign({ ref: (el) => searchResults = el }, this.searchResultEvents),
+                h("ul", null, this.searchResultOptions.map(([optionName, optionValue]) => h("li", { class: { 'highlighted': optionValue === this.highlightedResultOption }, "data-value": optionValue, key: optionValue }, optionName)))));
+        }
+        if (this.selectedOptions.length > 0) {
+            selectedResults = (h("div", null, Object.keys(this.options)
+                .filter(ok => this.selectedOptions.indexOf(this.options[ok]) !== -1)
+                .map(ok => h("span", null, ok))));
+        }
+        return (h("div", null,
+            searchResults,
+            selectedResults,
+            h("input", Object.assign({}, this.inputEvents, { ref: (el) => this.searchField = el, type: "text", autocomplete: "off", value: "" }))));
+    }
+    static get is() { return "demo-multi-select"; }
+    static get properties() { return {
+        "highlightedItemOption": {
+            "state": true
+        },
+        "highlightedResultOption": {
+            "state": true
+        },
+        "inputValue": {
+            "state": true
+        },
+        "isDisabled": {
+            "type": Boolean,
+            "attr": "is-disabled"
+        },
+        "options": {
+            "type": "Any",
+            "attr": "options"
+        },
+        "selectedOptions": {
+            "state": true,
+            "watchCallbacks": ["updatedSelection"]
+        },
+        "showingResults": {
+            "state": true
+        }
+    }; }
+    static get events() { return [{
+            "name": "selectionMade",
+            "method": "selectionMade",
+            "bubbles": true,
+            "cancelable": true,
+            "composed": true
+        }]; }
+}
+
+export { DemoApp, DemoCreateMessage, DemoMessageLog, DemoMultiSelect };
