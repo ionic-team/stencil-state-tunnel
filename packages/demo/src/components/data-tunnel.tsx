@@ -1,4 +1,4 @@
-import { createProviderConsumer } from '../../utils/state-tunnel';
+import { createProviderConsumer } from '@stencil/state-tunnel';
 
 export interface MessageItem {
   id: string,
