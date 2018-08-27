@@ -2,7 +2,7 @@
   "name": "@stencil/state-tunnel",
   "version": "0.0.7",
   "description": "Stencil State Tunnel",
-  "module": "dist/collection/index.js",
+  "module": "dist/esm/index.js",
   "main": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
@@ -10,21 +10,14 @@
     "dist/"
   ],
   "scripts": {
-    "build": "stencil build",
-    "dev": "sd concurrent \"stencil build --dev --watch\" \"stencil-dev-server\" ",
-    "deploy": "np",
-    "serve": "stencil-dev-server",
-    "start": "npm run dev",
-    "test": "jest",
-    "test.watch": "jest --watch"
+    "build": "../../node_modules/.bin/stencil build",
+    "start": "../../node_modules/.bin/stencil build --dev --watch --serve",
+    "test": "../../node_modules/.bin/jest",
+    "test.watch": "../../node_modules/.bin/jest --watch",
+    "deploy": "np"
   },
   "dependencies": {},
   "devDependencies": {
-    "@stencil/core": "^0.9.6",
-    "@stencil/dev-server": "latest",
-    "@stencil/utils": "latest",
-    "@types/jest": "^21.1.1",
-    "jest": "^21.2.1",
     "np": "^2.20.1"
   },
   "repository": {
@@ -39,7 +32,7 @@
   "homepage": "https://github.com/ionic-team/stencil-state-tunnel",
   "jest": {
     "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
+      "^.+\\.(ts|tsx)$": "<rootDir>/../../node_modules/@stencil/core/testing/jest.preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
     "moduleFileExtensions": [

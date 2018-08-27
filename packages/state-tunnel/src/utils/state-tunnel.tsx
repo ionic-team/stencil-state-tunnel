@@ -1,3 +1,5 @@
+import { FunctionalComponent } from "@stencil/core";
+
 function defaultConsumerRender(subscribe, child) {
   return <context-consumer
     subscribe={subscribe}
@@ -45,13 +47,13 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
     }
   }
 
-  function Provider({ state, children }: { state: T, children?: any[]}) {
+  const Provider: FunctionalComponent<{state: T}> = ({ state }, children) => {
     currentState = state;
     notifyConsumers();
     return children;
   }
 
-  function Consumer({ children }: any) {
+  const Consumer: FunctionalComponent<{}> = (props, children) => {
     return consumerRender(subscribe, children[0]);
   }
 
@@ -94,39 +96,6 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
       }
     }
   }
-
-  /*
-  function Props(fieldList: PropList) {
-
-    return (childComponent: any) => {
-      let unsubscribe: any = null;
-
-      const elementRefName = Object.keys(childComponent.properties).find(propName => {
-        return childComponent.properties[propName].elementRef == true;
-      });
-      if (elementRefName == undefined) {
-        throw new Error(`Please ensure that your Component ${childComponent.is} has an attribtue with "@Element" decorator. ` +
-          `This is required to be able to inject properties.`);
-      }
-
-      const prevComponentWillLoad = childComponent.prototype.componentWillLoad;
-      childComponent.prototype.componentWillLoad = function() {
-        unsubscribe = subscribe(this[elementRefName], fieldList);
-        if (prevComponentWillLoad) {
-          return prevComponentWillLoad.bind(this)();
-        }
-      }
-
-      const prevComponentDidUnload = childComponent.prototype.componentDidUnload;
-      childComponent.prototype.componentDidUnload = function() {
-        unsubscribe();
-        if (prevComponentDidUnload) {
-          return prevComponentDidUnload.bind(this)();
-        }
-      }
-    };
-  }
-  */
 
   return {
     Provider,

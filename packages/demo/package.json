@@ -4,18 +4,15 @@
   "version": "0.0.1",
   "description": "Stencil App Starter",
   "scripts": {
-    "build": "stencil build --prerender",
-    "start": "stencil build --dev --watch --serve",
-    "test": "jest",
-    "test.watch": "jest --watch"
+    "build": "../../node_modules/.bin/stencil build --prerender",
+    "start": "../../node_modules/.bin/stencil build --dev --watch --serve",
+    "test": "../../node_modules/.bin/jest",
+    "test.watch": "../../node_modules/.bin/jest --watch"
   },
   "dependencies": {
     "@stencil/router": "^0.2.5"
   },
   "devDependencies": {
-    "@stencil/core": "^0.11.4",
-    "@types/jest": "^23.3.1",
-    "jest": "^23.4.2"
   },
   "jest": {
     "transform": {

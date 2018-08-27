@@ -4,149 +4,85 @@
 */
 /* tslint:disable */
 
-import { JSXElements } from '@stencil/core';
+import '@stencil/core';
 
-import '@stencil/router'
+import '@stencil/state-tunnel'
 import {
-  LocationSegments,
-  MatchResults,
-  RouterHistory,
-} from '@stencil/router';
+  Recipient,
+} from './components/data-tunnel';
 
 
-declare namespace StencilComponents {
+export namespace Components {
 
-  interface RouterDemoApp {}
-  interface RouterDemoAppAttributes extends JSXElements.HTMLAttributes {}
+  interface DemoApp {}
+  interface DemoAppAttributes extends StencilHTMLAttributes {}
 
-  interface TestDeepComponent {
-    'history': RouterHistory;
-    'location': LocationSegments;
+  interface DemoCreateMessage {
+    'getReceiverList': () => Promise<Recipient[]>;
+    'sendMessage': (msg: string, recipients: Recipient[]) => Promise<void>;
+    'setCreatingMessage': (createMessage: boolean) => void;
   }
-  interface TestDeepComponentAttributes extends JSXElements.HTMLAttributes {
-    'history'?: RouterHistory;
-    'location'?: LocationSegments;
-  }
-
-  interface TestDemoFour {
-    'history': RouterHistory;
-    'match': MatchResults;
-    'pages': string[];
-  }
-  interface TestDemoFourAttributes extends JSXElements.HTMLAttributes {
-    'history'?: RouterHistory;
-    'match'?: MatchResults;
-    'pages'?: string[];
+  interface DemoCreateMessageAttributes extends StencilHTMLAttributes {
+    'getReceiverList'?: () => Promise<Recipient[]>;
+    'sendMessage'?: (msg: string, recipients: Recipient[]) => Promise<void>;
+    'setCreatingMessage'?: (createMessage: boolean) => void;
   }
 
-  interface TestDemoSeven {
-    'history': RouterHistory;
-    'match': MatchResults;
-    'pages': string[];
-  }
-  interface TestDemoSevenAttributes extends JSXElements.HTMLAttributes {
-    'history'?: RouterHistory;
-    'match'?: MatchResults;
-    'pages'?: string[];
-  }
-
-  interface TestDemoSix {
-    'history': RouterHistory;
-    'match': MatchResults;
-    'pages': string[];
-  }
-  interface TestDemoSixAttributes extends JSXElements.HTMLAttributes {
-    'history'?: RouterHistory;
-    'match'?: MatchResults;
-    'pages'?: string[];
-  }
-
-  interface TestDemoThree {
-    'history': RouterHistory;
-    'match': MatchResults;
-    'pages': string[];
-  }
-  interface TestDemoThreeAttributes extends JSXElements.HTMLAttributes {
-    'history'?: RouterHistory;
-    'match'?: MatchResults;
-    'pages'?: string[];
-  }
-}
-
-export interface LocalIntrinsicElements {
-  'router-demo-app': StencilComponents.RouterDemoAppAttributes;
-  'test-deep-component': StencilComponents.TestDeepComponentAttributes;
-  'test-demo-four': StencilComponents.TestDemoFourAttributes;
-  'test-demo-seven': StencilComponents.TestDemoSevenAttributes;
-  'test-demo-six': StencilComponents.TestDemoSixAttributes;
-  'test-demo-three': StencilComponents.TestDemoThreeAttributes;
+  interface DemoMessageLog {}
+  interface DemoMessageLogAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
+  interface StencilElementInterfaces {
+    'DemoApp': Components.DemoApp;
+    'DemoCreateMessage': Components.DemoCreateMessage;
+    'DemoMessageLog': Components.DemoMessageLog;
+  }
 
-  interface HTMLRouterDemoAppElement extends StencilComponents.RouterDemoApp, HTMLStencilElement {}
-  var HTMLRouterDemoAppElement: {
-    prototype: HTMLRouterDemoAppElement;
-    new (): HTMLRouterDemoAppElement;
+  interface StencilIntrinsicElements {
+    'demo-app': Components.DemoAppAttributes;
+    'demo-create-message': Components.DemoCreateMessageAttributes;
+    'demo-message-log': Components.DemoMessageLogAttributes;
+  }
+
+
+  interface HTMLDemoAppElement extends Components.DemoApp, HTMLStencilElement {}
+  var HTMLDemoAppElement: {
+    prototype: HTMLDemoAppElement;
+    new (): HTMLDemoAppElement;
   };
 
-  interface HTMLTestDeepComponentElement extends StencilComponents.TestDeepComponent, HTMLStencilElement {}
-  var HTMLTestDeepComponentElement: {
-    prototype: HTMLTestDeepComponentElement;
-    new (): HTMLTestDeepComponentElement;
+  interface HTMLDemoCreateMessageElement extends Components.DemoCreateMessage, HTMLStencilElement {}
+  var HTMLDemoCreateMessageElement: {
+    prototype: HTMLDemoCreateMessageElement;
+    new (): HTMLDemoCreateMessageElement;
   };
 
-  interface HTMLTestDemoFourElement extends StencilComponents.TestDemoFour, HTMLStencilElement {}
-  var HTMLTestDemoFourElement: {
-    prototype: HTMLTestDemoFourElement;
-    new (): HTMLTestDemoFourElement;
-  };
-
-  interface HTMLTestDemoSevenElement extends StencilComponents.TestDemoSeven, HTMLStencilElement {}
-  var HTMLTestDemoSevenElement: {
-    prototype: HTMLTestDemoSevenElement;
-    new (): HTMLTestDemoSevenElement;
-  };
-
-  interface HTMLTestDemoSixElement extends StencilComponents.TestDemoSix, HTMLStencilElement {}
-  var HTMLTestDemoSixElement: {
-    prototype: HTMLTestDemoSixElement;
-    new (): HTMLTestDemoSixElement;
-  };
-
-  interface HTMLTestDemoThreeElement extends StencilComponents.TestDemoThree, HTMLStencilElement {}
-  var HTMLTestDemoThreeElement: {
-    prototype: HTMLTestDemoThreeElement;
-    new (): HTMLTestDemoThreeElement;
+  interface HTMLDemoMessageLogElement extends Components.DemoMessageLog, HTMLStencilElement {}
+  var HTMLDemoMessageLogElement: {
+    prototype: HTMLDemoMessageLogElement;
+    new (): HTMLDemoMessageLogElement;
   };
 
   interface HTMLElementTagNameMap {
-    'router-demo-app': HTMLRouterDemoAppElement
-    'test-deep-component': HTMLTestDeepComponentElement
-    'test-demo-four': HTMLTestDemoFourElement
-    'test-demo-seven': HTMLTestDemoSevenElement
-    'test-demo-six': HTMLTestDemoSixElement
-    'test-demo-three': HTMLTestDemoThreeElement
+    'demo-app': HTMLDemoAppElement
+    'demo-create-message': HTMLDemoCreateMessageElement
+    'demo-message-log': HTMLDemoMessageLogElement
   }
 
   interface ElementTagNameMap {
-    'router-demo-app': HTMLRouterDemoAppElement;
-    'test-deep-component': HTMLTestDeepComponentElement;
-    'test-demo-four': HTMLTestDemoFourElement;
-    'test-demo-seven': HTMLTestDemoSevenElement;
-    'test-demo-six': HTMLTestDemoSixElement;
-    'test-demo-three': HTMLTestDemoThreeElement;
+    'demo-app': HTMLDemoAppElement;
+    'demo-create-message': HTMLDemoCreateMessageElement;
+    'demo-message-log': HTMLDemoMessageLogElement;
   }
-}
 
 
-import { DefaultIntrinsicElements } from '@stencil/core';
-
-declare global {
   export namespace JSX {
-    export interface IntrinsicElements extends LocalIntrinsicElements, DefaultIntrinsicElements {
+    export interface Element {}
+    export interface IntrinsicElements extends StencilIntrinsicElements {
       [tagName: string]: any;
     }
   }
-}
+  export interface HTMLAttributes extends StencilHTMLAttributes {}
 
+}
