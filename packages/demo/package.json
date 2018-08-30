@@ -10,7 +10,8 @@
     "test.watch": "../../node_modules/.bin/jest --watch"
   },
   "dependencies": {
-    "@stencil/router": "^0.2.5"
+    "@stencil/router": "^0.2.5",
+    "@stencil/state-tunnel": "^0.0.7"
   },
   "devDependencies": {
   },

@@ -6,10 +6,10 @@
 
 import '@stencil/core';
 
-import '@stencil/state-tunnel'
+import '@stencil/state-tunnel';
 import {
   Recipient,
-} from './components/data-tunnel';
+} from './utils/data-tunnel';
 
 
 export namespace Components {

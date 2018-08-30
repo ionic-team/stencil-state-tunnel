@@ -1,6 +1,6 @@
 import { Component, State } from '@stencil/core';
-import Tunnel, { State as TunnelState, MessageItem, Recipient } from './data-tunnel'; // Import the Tunnel
-import * as API from './api-util';
+import Tunnel, { State as TunnelState, MessageItem, Recipient } from '../utils/data-tunnel'; // Import the Tunnel
+import * as API from '../utils/api-util';
 
 
 @Component({
@@ -37,6 +37,7 @@ export class DemoApp {
   setCreatingMessage = (creatingMessage: boolean) => {
     this.creatingMessage = creatingMessage;
   }
+
 
   render() {
     const tunnelState: TunnelState = {

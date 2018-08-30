@@ -1,5 +1,5 @@
 import { Component } from '@stencil/core';
-import Tunnel, { State } from './data-tunnel'; // Import the tunnel
+import Tunnel, { State } from '../utils/data-tunnel'; // Import the tunnel
 
 function dateToTimestamp(d: Date) {
   const hours = d.getHours();
@@ -36,26 +36,29 @@ export class DemoMessageLog {
   render() {
     return (
       <Tunnel.Consumer>
-        {({ messageLog }: State) => (
-          <div>
-            {(messageLog.length === 0) ?
-            <p>No messages sent.</p> :
-            <ul class="msg-list">
-              {
-                messageLog
-                .sort((a, b) => (b.timeStamp.getTime() - a.timeStamp.getTime()))
-                .map(message => (
-                  <li key={message.id}>
-                    <span class="row-desc">To:</span> {message.recipients.map(re => re.name).join(', ')}<br/>
-                    <span class="row-desc">Time:</span> {dateToTimestamp(message.timeStamp)}<br/>
-                    <span class="row-desc">Text:</span> {message.message}<br/>
-                  </li>
-                ))
+        {(props: State) => {
+          console.log(props);
+          return (
+            <div>
+              {(props.messageLog.length === 0) ?
+              <p>No messages sent.</p> :
+              <ul class="msg-list">
+                {
+                  props.messageLog
+                  .sort((a, b) => (b.timeStamp.getTime() - a.timeStamp.getTime()))
+                  .map(message => (
+                    <li key={message.id}>
+                      <span class="row-desc">To:</span> {message.recipients.map(re => re.name).join(', ')}<br/>
+                      <span class="row-desc">Time:</span> {dateToTimestamp(message.timeStamp)}<br/>
+                      <span class="row-desc">Text:</span> {message.message}<br/>
+                    </li>
+                  ))
+                }
+              </ul>
               }
-            </ul>
-            }
-          </div>
-        )}
+            </div>
+          );
+        }}
       </Tunnel.Consumer>
     );
   }

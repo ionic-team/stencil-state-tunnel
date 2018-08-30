@@ -1,5 +1,5 @@
 import { Component, Prop, State, Element } from '@stencil/core';
-import Tunnel, { Recipient } from './data-tunnel';
+import Tunnel, { Recipient } from '../utils/data-tunnel';
 
 @Component({
   tag: 'demo-create-message',
@@ -46,7 +46,6 @@ export class DemoCreateMessage {
   }
 
   updateRecipientList = () => {
-    console.log('update');
     this.selectedReceiverIds = Array.from(this.select.querySelectorAll('option'))
       .filter((op: HTMLOptionElement) => op.selected)
       .map((op: HTMLOptionElement) => op.value);
@@ -58,7 +57,6 @@ export class DemoCreateMessage {
   }
 
   render() {
-    console.log('render', this.selectedReceiverIds);
     return (
       <form onSubmit={this.sendToMessageQueue}>
         {this.errorText != null ?
