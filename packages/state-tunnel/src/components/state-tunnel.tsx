@@ -1,24 +1,30 @@
 import { Component, Prop, State, Element } from '@stencil/core';
+import { SubscribeCallback } from '../declarations';
 
 @Component({
   tag: 'context-consumer'
 })
 export class ContextConsumer {
-  @Element() el: HTMLStencilElement;
+  @Element() el!: HTMLStencilElement;
+
   @Prop() context: { [key: string]: any } = {};
-  @Prop() renderer: any = (props: any ) => {
-    props;
-    return null;
-  };
-  @Prop() subscribe: (el: any, props: string[] | string) => () => void
-  @State() unsubscribe: () => void;
+  @Prop() renderer: Function = () => null;
+  @Prop() subscribe?: SubscribeCallback<string>;
+
+  @State() unsubscribe?: () => void;
 
   componentWillLoad() {
-    this.unsubscribe = this.subscribe(this.el, 'context');
+    this.unsubscribe = () => {
+      if (this.subscribe != null) {
+        this.subscribe(this.el, 'context');
+      }
+    }
   }
 
   componentDidUnload() {
-    this.unsubscribe();
+    if (this.unsubscribe != null) {
+      this.unsubscribe();
+    }
   }
 
   render() {

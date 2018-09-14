@@ -10,11 +10,10 @@
     "test.watch": "../../node_modules/.bin/jest --watch"
   },
   "dependencies": {
-    "@stencil/router": "^0.2.5",
+    "@stencil/router": "^0.2.6",
     "@stencil/state-tunnel": "^0.0.7"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "jest": {
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"

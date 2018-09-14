@@ -2,6 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "allowUnreachableCode": false,
+    "strict": true,
     "declaration": false,
     "experimentalDecorators": true,
     "lib": [

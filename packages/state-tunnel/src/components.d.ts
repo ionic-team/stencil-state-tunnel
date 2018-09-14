@@ -7,19 +7,22 @@
 import '@stencil/core';
 
 
+import {
+  SubscribeCallback,
+} from './declarations';
 
 
 export namespace Components {
 
   interface ContextConsumer {
     'context': { [key: string]: any };
-    'renderer': any;
-    'subscribe': (el: any, props: string[] | string) => () => void;
+    'renderer': Function;
+    'subscribe'?: SubscribeCallback<string>;
   }
   interface ContextConsumerAttributes extends StencilHTMLAttributes {
     'context'?: { [key: string]: any };
-    'renderer'?: any;
-    'subscribe'?: (el: any, props: string[] | string) => () => void;
+    'renderer'?: Function;
+    'subscribe'?: SubscribeCallback<string>;
   }
 }
 
