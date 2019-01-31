@@ -5,7 +5,7 @@
  */
 
 
-import { JSXElements } from '@stencil/core';
+import '@stencil/core';
 
 import '@stencil/state-tunnel';
 import {
@@ -16,21 +16,21 @@ import {
 export namespace Components {
 
   interface DemoApp {}
-  interface DemoAppAttributes extends JSXElements.HTMLAttributes {}
+  interface DemoAppAttributes extends StencilHTMLAttributes {}
 
   interface DemoCreateMessage {
     'getReceiverList': () => Promise<Recipient[]>;
     'sendMessage': (msg: string, recipients: Recipient[]) => Promise<void>;
     'setCreatingMessage': (createMessage: boolean) => void;
   }
-  interface DemoCreateMessageAttributes extends JSXElements.HTMLAttributes {
+  interface DemoCreateMessageAttributes extends StencilHTMLAttributes {
     'getReceiverList'?: () => Promise<Recipient[]>;
     'sendMessage'?: (msg: string, recipients: Recipient[]) => Promise<void>;
     'setCreatingMessage'?: (createMessage: boolean) => void;
   }
 
   interface DemoMessageLog {}
-  interface DemoMessageLogAttributes extends JSXElements.HTMLAttributes {}
+  interface DemoMessageLogAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
@@ -76,5 +76,14 @@ declare global {
     'demo-create-message': HTMLDemoCreateMessageElement;
     'demo-message-log': HTMLDemoMessageLogElement;
   }
+
+
+  export namespace JSX {
+    export interface Element {}
+    export interface IntrinsicElements extends StencilIntrinsicElements {
+      [tagName: string]: any;
+    }
+  }
+  export interface HTMLAttributes extends StencilHTMLAttributes {}
 
 }
