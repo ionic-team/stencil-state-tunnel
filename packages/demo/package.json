@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@stencil/router": "^0.2.6",
-    "@stencil/state-tunnel": "^0.0.7"
+    "@stencil/state-tunnel": "0.0.8"
   },
   "devDependencies": {},
   "jest": {

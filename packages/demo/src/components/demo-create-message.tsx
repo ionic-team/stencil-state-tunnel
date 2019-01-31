@@ -1,4 +1,4 @@
-import { Component, Prop, State, Element } from '@stencil/core';
+import { Component, Prop, State, Element, h } from '@stencil/core';
 import Tunnel, { Recipient } from '../utils/data-tunnel';
 
 @Component({
