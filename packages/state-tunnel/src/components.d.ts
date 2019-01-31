@@ -5,7 +5,7 @@
  */
 
 
-import { JSXElements } from '@stencil/core';
+import '@stencil/core';
 
 
 import {
@@ -20,7 +20,7 @@ export namespace Components {
     'renderer': Function;
     'subscribe'?: SubscribeCallback<string>;
   }
-  interface ContextConsumerAttributes extends JSXElements.HTMLAttributes {
+  interface ContextConsumerAttributes extends StencilHTMLAttributes {
     'context'?: { [key: string]: any };
     'renderer'?: Function;
     'subscribe'?: SubscribeCallback<string>;
@@ -50,5 +50,14 @@ declare global {
   interface ElementTagNameMap {
     'context-consumer': HTMLContextConsumerElement;
   }
+
+
+  export namespace JSX {
+    export interface Element {}
+    export interface IntrinsicElements extends StencilIntrinsicElements {
+      [tagName: string]: any;
+    }
+  }
+  export interface HTMLAttributes extends StencilHTMLAttributes {}
 
 }

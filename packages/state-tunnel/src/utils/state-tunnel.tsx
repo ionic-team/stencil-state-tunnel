@@ -1,4 +1,4 @@
-import { FunctionalComponent, h } from "@stencil/core";
+import { FunctionalComponent } from "@stencil/core";
 import { SubscribeCallback } from '../declarations';
 
 function defaultConsumerRender(subscribe: SubscribeCallback<string>, renderer: Function) {
