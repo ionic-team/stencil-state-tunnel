@@ -1,14 +1,9 @@
 import { FunctionalComponent } from "@stencil/core";
 import { SubscribeCallback } from '../declarations';
 
-function defaultConsumerRender(subscribe: SubscribeCallback<string>, renderer: Function) {
-  return <context-consumer
-    subscribe={subscribe}
-    renderer={renderer}
-  />;
-}
+type ConsumerRenderer = (subscribe: SubscribeCallback<string>, renderer: Function) => JSX.Element;
 
-export function createProviderConsumer<T extends object>(defaultState: T, consumerRender = defaultConsumerRender) {
+export function createProviderConsumer<T extends object>(defaultState: T, consumerRender: ConsumerRenderer) {
   type PropList = Extract<keyof T, string>[];
 
   let listeners: Map<HTMLStencilElement, PropList> = new Map();
