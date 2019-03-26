@@ -1,19 +1,12 @@
 import { FunctionalComponent } from "@stencil/core";
-import { SubscribeCallback } from '../declarations';
+import { SubscribeCallback, ConsumerRenderer, PropList } from '../declarations';
 
-type ConsumerRenderer = (subscribe: SubscribeCallback<string>, renderer: Function) => JSX.Element;
+export function createProviderConsumer<T extends {[key: string]: any}>(defaultState: T, consumerRender: ConsumerRenderer<T>) {
 
-export function createProviderConsumer<T extends object>(defaultState: T, consumerRender: ConsumerRenderer) {
-  type PropList = Extract<keyof T, string>[];
-
-  let listeners: Map<HTMLStencilElement, PropList> = new Map();
+  let listeners: Map<HTMLStencilElement, PropList<T>> = new Map();
   let currentState: T = defaultState;
 
-  function notifyConsumers() {
-    listeners.forEach(updateListener)
-  }
-
-  function updateListener(fields: PropList, listener: HTMLStencilElement) {
+  function updateListener(fields: PropList<T>, listener: HTMLStencilElement) {
     if (Array.isArray(fields)) {
       [...fields].forEach(fieldName => {
         (listener as any)[fieldName] = currentState[fieldName];
@@ -26,18 +19,13 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
     listener.forceUpdate();
   }
 
-  function attachListener(propList: PropList) {
-    return (el: HTMLStencilElement) => {
-      if (listeners.has(el)) {
-        return;
-      }
-      listeners.set(el, propList);
-      updateListener(propList, el);
+  const subscribe: SubscribeCallback<T> = (el: HTMLStencilElement, propList: PropList<T>) => {
+    if (listeners.has(el)) {
+      return () => {};
     }
-  }
+    listeners.set(el, propList);
+    updateListener(propList, el);
 
-  function subscribe(el: HTMLStencilElement, propList: PropList) {
-    attachListener(propList)(el);
     return function() {
       listeners.delete(el);
     }
@@ -45,29 +33,17 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
 
   const Provider: FunctionalComponent<{state: T}> = ({ state }, children) => {
     currentState = state;
-    notifyConsumers();
+    listeners.forEach(updateListener);
     return children;
   }
 
   const Consumer: FunctionalComponent<{}> = (props, children) => {
     // The casting on subscribe is to allow for crossover through the stencil compiler
     // In the future we should allow for generics in components.
-    return consumerRender(subscribe as SubscribeCallback<string>, children[0] as Function);
+    return consumerRender(subscribe, children[0] as Function);
   }
 
-  function wrapConsumer(childComponent: any, fieldList: PropList) {
-    const Child = childComponent.is;
-
-    return ({ children, ...props}: any ) => {
-      return (
-        <Child ref={attachListener(fieldList)} {...props}>
-          { children }
-        </Child>
-      );
-    };
-  }
-
-  function injectProps(childComponent: any, fieldList: PropList) {
+  function injectProps(childComponent: any, fieldList: PropList<T>) {
     let unsubscribe: any = null;
 
     const elementRefName = Object.keys(childComponent.properties).find(propName => {
@@ -98,7 +74,6 @@ export function createProviderConsumer<T extends object>(defaultState: T, consum
   return {
     Provider,
     Consumer,
-    wrapConsumer,
     injectProps
   }
 }
