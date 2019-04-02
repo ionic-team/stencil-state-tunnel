@@ -18,12 +18,12 @@ export namespace Components {
   interface ContextConsumer {
     'context': { [key: string]: any };
     'renderer': Function;
-    'subscribe'?: SubscribeCallback<string>;
+    'subscribe'?: SubscribeCallback<any>;
   }
   interface ContextConsumerAttributes extends StencilHTMLAttributes {
     'context'?: { [key: string]: any };
     'renderer'?: Function;
-    'subscribe'?: SubscribeCallback<string>;
+    'subscribe'?: SubscribeCallback<any>;
   }
 }
 

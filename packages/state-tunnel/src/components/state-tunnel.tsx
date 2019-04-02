@@ -9,7 +9,7 @@ export class ContextConsumer {
 
   @Prop() context: { [key: string]: any } = {};
   @Prop() renderer: Function = () => null;
-  @Prop() subscribe?: SubscribeCallback<string>;
+  @Prop() subscribe?: SubscribeCallback<any>;
 
   @State() unsubscribe?: () => void;
 
