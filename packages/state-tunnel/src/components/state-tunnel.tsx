@@ -1,4 +1,4 @@
-import { Component, Prop, State, Element } from '@stencil/core';
+import { Component, HTMLStencilElement, Prop, State, Element } from '@stencil/core';
 import { SubscribeCallback } from '../declarations';
 
 @Component({

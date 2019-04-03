@@ -5,44 +5,57 @@
  */
 
 
-import '@stencil/core';
-
-
+import { JSXBase } from '@stencil/core/internal';
+import { JSX } from '@stencil/core';
 import {
   SubscribeCallback,
 } from './declarations';
 
 
 export namespace Components {
-
   interface ContextConsumer {
     'context': { [key: string]: any };
     'renderer': Function;
     'subscribe'?: SubscribeCallback<any>;
   }
-  interface ContextConsumerAttributes extends StencilHTMLAttributes {
+}
+
+interface HTMLStencilElement extends HTMLElement {
+  componentOnReady(): Promise<this>;
+  forceUpdate(): void;
+}
+
+declare namespace LocalJSX {
+  interface ContextConsumer extends JSXBase.HTMLAttributes {
     'context'?: { [key: string]: any };
     'renderer'?: Function;
     'subscribe'?: SubscribeCallback<any>;
   }
-}
 
-declare global {
-  interface StencilElementInterfaces {
+  interface ElementInterfaces {
     'ContextConsumer': Components.ContextConsumer;
   }
 
-  interface StencilIntrinsicElements {
-    'context-consumer': Components.ContextConsumerAttributes;
+  interface IntrinsicElements {
+    'ContextConsumer': LocalJSX.ContextConsumer;
   }
+}
+export { LocalJSX as JSX };
 
+declare module "@stencil/core" {
+  export namespace JSX {
+    interface ElementInterfaces extends LocalJSX.ElementInterfaces {}
+    interface IntrinsicElements extends LocalJSX.IntrinsicElements {}
+  }
+}
+
+declare global {
 
   interface HTMLContextConsumerElement extends Components.ContextConsumer, HTMLStencilElement {}
   var HTMLContextConsumerElement: {
     prototype: HTMLContextConsumerElement;
     new (): HTMLContextConsumerElement;
   };
-
   interface HTMLElementTagNameMap {
     'context-consumer': HTMLContextConsumerElement
   }
@@ -50,14 +63,5 @@ declare global {
   interface ElementTagNameMap {
     'context-consumer': HTMLContextConsumerElement;
   }
-
-
-  export namespace JSX {
-    export interface Element {}
-    export interface IntrinsicElements extends StencilIntrinsicElements {
-      [tagName: string]: any;
-    }
-  }
-  export interface HTMLAttributes extends StencilHTMLAttributes {}
-
 }
+

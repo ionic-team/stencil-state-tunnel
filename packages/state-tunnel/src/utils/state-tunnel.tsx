@@ -1,12 +1,12 @@
-import { FunctionalComponent } from "@stencil/core";
+import { FunctionalComponent, HTMLStencilElement } from "@stencil/core";
 import { SubscribeCallback, ConsumerRenderer, PropList } from '../declarations';
 
-export function createProviderConsumer<T extends {[key: string]: any}>(defaultState: T, consumerRender: ConsumerRenderer<T>) {
+export const createProviderConsumer = <T extends {[key: string]: any}>(defaultState: T, consumerRender: ConsumerRenderer<T>) => {
 
   let listeners: Map<HTMLStencilElement, PropList<T>> = new Map();
   let currentState: T = defaultState;
 
-  function updateListener(fields: PropList<T>, listener: HTMLStencilElement) {
+  const updateListener = (fields: PropList<T>, listener: HTMLStencilElement) => {
     if (Array.isArray(fields)) {
       [...fields].forEach(fieldName => {
         (listener as any)[fieldName] = currentState[fieldName];
@@ -26,7 +26,7 @@ export function createProviderConsumer<T extends {[key: string]: any}>(defaultSt
     listeners.set(el, propList);
     updateListener(propList, el);
 
-    return function() {
+    return () => {
       listeners.delete(el);
     }
   }
@@ -40,10 +40,10 @@ export function createProviderConsumer<T extends {[key: string]: any}>(defaultSt
   const Consumer: FunctionalComponent<{}> = (props, children) => {
     // The casting on subscribe is to allow for crossover through the stencil compiler
     // In the future we should allow for generics in components.
-    return consumerRender(subscribe, children[0] as Function);
+    return consumerRender(subscribe, children[0] as any);
   }
 
-  function injectProps(childComponent: any, fieldList: PropList<T>) {
+  const injectProps = (childComponent: any, fieldList: PropList<T>) => {
     let unsubscribe: any = null;
 
     const elementRefName = Object.keys(childComponent.properties).find(propName => {
