@@ -1,11 +1,11 @@
-import { Component, HTMLStencilElement, Prop, State, Element } from '@stencil/core';
+import { Component, Prop, State, Element } from '@stencil/core';
 import { SubscribeCallback } from '../declarations';
 
 @Component({
   tag: 'context-consumer'
 })
 export class ContextConsumer {
-  @Element() el!: HTMLStencilElement;
+  @Element() el!: any;
 
   @Prop() context: { [key: string]: any } = {};
   @Prop() renderer: Function = () => null;

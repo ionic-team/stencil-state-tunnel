@@ -5,7 +5,7 @@
  */
 
 
-import { JSXBase } from '@stencil/core/internal';
+import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
 import { JSX } from '@stencil/core';
 import {
   SubscribeCallback,
@@ -18,11 +18,6 @@ export namespace Components {
     'renderer': Function;
     'subscribe'?: SubscribeCallback<any>;
   }
-}
-
-interface HTMLStencilElement extends HTMLElement {
-  componentOnReady(): Promise<this>;
-  forceUpdate(): void;
 }
 
 declare namespace LocalJSX {
