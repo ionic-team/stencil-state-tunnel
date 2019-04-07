@@ -1,4 +1,4 @@
-import { FunctionalComponent } from '@stencil/core';
+import { ComponentInterface, FunctionalComponent } from '@stencil/core';
 import { SubscribeCallback, ConsumerRenderer, PropList } from '../declarations';
 
 export const createProviderConsumer = <T extends {[key: string]: any}>(defaultState: T, consumerRender: ConsumerRenderer<T>) => {
@@ -6,29 +6,28 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
   let listeners: Map<any, PropList<T>> = new Map();
   let currentState: T = defaultState;
 
-  const updateListener = (fields: PropList<T>, listener: any) => {
+  const updateListener = (fields: PropList<T>, instance: any) => {
     if (Array.isArray(fields)) {
       [...fields].forEach(fieldName => {
-        (listener as any)[fieldName] = currentState[fieldName];
+        (instance as any)[fieldName] = currentState[fieldName];
       });
+
     } else {
-      (listener as any)[fields] = {
+      (instance as any)[fields] = {
         ...currentState as object
       } as T;
     }
-    listener.forceUpdate();
   }
 
-  const subscribe: SubscribeCallback<T> = (el: any, propList: PropList<T>) => {
-    if (listeners.has(el)) {
-      return () => {};
+  const subscribe: SubscribeCallback<T> = (instance: ComponentInterface, propList: PropList<T>) => {
+    if (listeners.has(instance)) {
+      return noop;
     }
-    listeners.set(el, propList);
-    updateListener(propList, el);
 
-    return () => {
-      listeners.delete(el);
-    }
+    listeners.set(instance, propList);
+    updateListener(propList, instance);
+
+    return () => listeners.delete(instance);
   }
 
   const Provider: FunctionalComponent<{state: T}> = ({ state }, children) => {
@@ -46,8 +45,8 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
   const injectProps = (childComponent: any, fieldList: PropList<T>) => {
     let unsubscribe: any = null;
 
-    const prevComponentWillLoad = childComponent.prototype.componentWillLoad;
-    childComponent.prototype.componentWillLoad = function() {
+    const prevComponentWillLoad = (childComponent.prototype as ComponentInterface).componentWillLoad;
+    (childComponent.prototype as ComponentInterface).componentWillLoad = function() {
       unsubscribe = subscribe(null, fieldList);
       if (prevComponentWillLoad) {
         return prevComponentWillLoad.bind(this)();
@@ -69,3 +68,5 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
     injectProps
   }
 }
+
+const noop = () => {};
