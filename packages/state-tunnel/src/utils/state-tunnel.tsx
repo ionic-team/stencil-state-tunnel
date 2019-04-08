@@ -47,7 +47,7 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
 
     const prevComponentWillLoad = (childComponent.prototype as ComponentInterface).componentWillLoad;
     (childComponent.prototype as ComponentInterface).componentWillLoad = function() {
-      unsubscribe = subscribe(null, fieldList);
+      unsubscribe = subscribe(this, fieldList);
       if (prevComponentWillLoad) {
         return prevComponentWillLoad.bind(this)();
       }
