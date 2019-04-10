@@ -46,6 +46,7 @@ declare module "@stencil/core" {
 
 declare global {
 
+
   interface HTMLContextConsumerElement extends Components.ContextConsumer, HTMLStencilElement {}
   var HTMLContextConsumerElement: {
     prototype: HTMLContextConsumerElement;
