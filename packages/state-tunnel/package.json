@@ -12,10 +12,10 @@
   ],
   "scripts": {
     "build": "../../node_modules/.bin/stencil build",
+    "release": "np --any-branch",
     "start": "../../node_modules/.bin/stencil build --dev --watch --serve",
     "test": "../../node_modules/.bin/jest",
-    "test.watch": "../../node_modules/.bin/jest --watch",
-    "deploy": "np"
+    "test.watch": "../../node_modules/.bin/jest --watch"
   },
   "dependencies": {},
   "devDependencies": {
