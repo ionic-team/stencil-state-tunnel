@@ -1,6 +1,7 @@
 import { ComponentInterface, FunctionalComponent } from '@stencil/core';
 import { SubscribeCallback, ConsumerRenderer, PropList } from '../declarations';
 
+
 export const createProviderConsumer = <T extends {[key: string]: any}>(defaultState: T, consumerRender: ConsumerRenderer<T>) => {
 
   let listeners: Map<any, PropList<T>> = new Map();
@@ -20,14 +21,10 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
   }
 
   const subscribe: SubscribeCallback<T> = (instance: ComponentInterface, propList: PropList<T>) => {
-    if (listeners.has(instance)) {
-      return noop;
+    if (!listeners.has(instance)) {
+      listeners.set(instance, propList);
+      updateListener(propList, instance);
     }
-
-    listeners.set(instance, propList);
-    updateListener(propList, instance);
-
-    return () => listeners.delete(instance);
   }
 
   const Provider: FunctionalComponent<{state: T}> = ({ state }, children) => {
@@ -42,24 +39,25 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
     return consumerRender(subscribe, children[0] as any);
   }
 
-  const injectProps = (childComponent: any, fieldList: PropList<T>) => {
-    let unsubscribe: any = null;
+  const injectProps = (Cstr: any, fieldList: PropList<T>) => {
+    const CstrPrototype = Cstr.prototype;
+    const cstrComponentWillLoad = CstrPrototype.componentWillLoad;
+    const cstrComponentDidUnload = CstrPrototype.componentDidUnload;
 
-    const prevComponentWillLoad = (childComponent.prototype as ComponentInterface).componentWillLoad;
-    (childComponent.prototype as ComponentInterface).componentWillLoad = function() {
-      unsubscribe = subscribe(this, fieldList);
-      if (prevComponentWillLoad) {
-        return prevComponentWillLoad.bind(this)();
+    CstrPrototype.componentWillLoad = function() {
+      subscribe(this, fieldList);
+
+      if (cstrComponentWillLoad) {
+        return cstrComponentWillLoad.call(this);
       }
     }
 
-    const prevComponentDidUnload = childComponent.prototype.componentDidUnload;
-    childComponent.prototype.componentDidUnload = function() {
-      unsubscribe();
-      if (prevComponentDidUnload) {
-        return prevComponentDidUnload.bind(this)();
+    CstrPrototype.componentDidUnload = function() {
+      listeners.delete(this);
+      if (cstrComponentDidUnload) {
+        cstrComponentDidUnload.call(this);
       }
-    }
+    };
   }
 
   return {
@@ -68,5 +66,3 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
     injectProps
   }
 }
-
-const noop = () => {};
