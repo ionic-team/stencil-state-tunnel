@@ -73,11 +73,13 @@ describe('createProviderConsumer', () => {
     expect(elm.setCreatingMessage).toBeUndefined();
   });
 
-  fit('should set element props array of strings', async () => {
+  it('should set element props array of strings', async () => {
     @Component({ tag: 'cmp-a' })
     class CmpA {
       @Prop() messageLog: string[];
       @Prop() creatingMessage: boolean;
+      connectedCallback() {}
+      disconnectedCallback() {}
     }
 
     Tunnel.injectProps(CmpA, ['messageLog', 'creatingMessage']);

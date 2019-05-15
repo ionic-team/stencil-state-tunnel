@@ -41,21 +41,21 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
 
   const injectProps = (Cstr: any, fieldList: PropList<T>) => {
     const CstrPrototype = Cstr.prototype;
-    const cstrComponentWillLoad = CstrPrototype.componentWillLoad;
-    const cstrComponentDidUnload = CstrPrototype.componentDidUnload;
+    const cstrConnectedCallback = CstrPrototype.connectedCallback;
+    const cstrDisconnectedCallback = CstrPrototype.disconnectedCallback;
 
-    CstrPrototype.componentWillLoad = function() {
+    CstrPrototype.connectedCallback = function() {
       subscribe(this, fieldList);
 
-      if (cstrComponentWillLoad) {
-        return cstrComponentWillLoad.call(this);
+      if (cstrConnectedCallback) {
+        return cstrConnectedCallback.call(this);
       }
     }
 
-    CstrPrototype.componentDidUnload = function() {
+    CstrPrototype.disconnectedCallback = function() {
       listeners.delete(this);
-      if (cstrComponentDidUnload) {
-        cstrComponentDidUnload.call(this);
+      if (cstrDisconnectedCallback) {
+        cstrDisconnectedCallback.call(this);
       }
     };
   }
