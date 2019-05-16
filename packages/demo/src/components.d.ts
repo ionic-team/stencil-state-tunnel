@@ -5,46 +5,51 @@
  */
 
 
-import '@stencil/core';
-
-import '@stencil/state-tunnel';
+import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
+import { JSX } from '@stencil/core';
 import {
   Recipient,
 } from './utils/data-tunnel';
 
 
 export namespace Components {
-
   interface DemoApp {}
-  interface DemoAppAttributes extends StencilHTMLAttributes {}
-
   interface DemoCreateMessage {
     'getReceiverList': () => Promise<Recipient[]>;
     'sendMessage': (msg: string, recipients: Recipient[]) => Promise<void>;
     'setCreatingMessage': (createMessage: boolean) => void;
   }
-  interface DemoCreateMessageAttributes extends StencilHTMLAttributes {
+  interface DemoMessageLog {}
+}
+
+declare namespace LocalJSX {
+  interface DemoApp extends JSXBase.HTMLAttributes {}
+  interface DemoCreateMessage extends JSXBase.HTMLAttributes {
     'getReceiverList'?: () => Promise<Recipient[]>;
     'sendMessage'?: (msg: string, recipients: Recipient[]) => Promise<void>;
     'setCreatingMessage'?: (createMessage: boolean) => void;
   }
+  interface DemoMessageLog extends JSXBase.HTMLAttributes {}
 
-  interface DemoMessageLog {}
-  interface DemoMessageLogAttributes extends StencilHTMLAttributes {}
+  interface IntrinsicElements {
+    'demo-app': DemoApp;
+    'demo-create-message': DemoCreateMessage;
+    'demo-message-log': DemoMessageLog;
+  }
 }
 
-declare global {
-  interface StencilElementInterfaces {
-    'DemoApp': Components.DemoApp;
-    'DemoCreateMessage': Components.DemoCreateMessage;
-    'DemoMessageLog': Components.DemoMessageLog;
-  }
+export { LocalJSX as JSX };
 
-  interface StencilIntrinsicElements {
-    'demo-app': Components.DemoAppAttributes;
-    'demo-create-message': Components.DemoCreateMessageAttributes;
-    'demo-message-log': Components.DemoMessageLogAttributes;
+
+declare module "@stencil/core" {
+  export namespace JSX {
+    interface IntrinsicElements extends LocalJSX.IntrinsicElements {}
   }
+}
+
+
+declare global {
+
 
 
   interface HTMLDemoAppElement extends Components.DemoApp, HTMLStencilElement {}
@@ -66,24 +71,11 @@ declare global {
   };
 
   interface HTMLElementTagNameMap {
-    'demo-app': HTMLDemoAppElement
-    'demo-create-message': HTMLDemoCreateMessageElement
-    'demo-message-log': HTMLDemoMessageLogElement
-  }
-
-  interface ElementTagNameMap {
     'demo-app': HTMLDemoAppElement;
     'demo-create-message': HTMLDemoCreateMessageElement;
     'demo-message-log': HTMLDemoMessageLogElement;
   }
 
-
-  export namespace JSX {
-    export interface Element {}
-    export interface IntrinsicElements extends StencilIntrinsicElements {
-      [tagName: string]: any;
-    }
-  }
-  export interface HTMLAttributes extends StencilHTMLAttributes {}
-
+  interface ElementTagNameMap extends HTMLElementTagNameMap {}
 }
+

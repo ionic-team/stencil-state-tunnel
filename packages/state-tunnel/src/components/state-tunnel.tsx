@@ -14,10 +14,8 @@ export class ContextConsumer {
   @State() unsubscribe?: () => void;
 
   connectedCallback() {
-    this.unsubscribe = () => {
-      if (this.subscribe != null) {
-        this.subscribe(this.el, 'context');
-      }
+    if (this.subscribe != null) {
+      this.unsubscribe = this.subscribe(this.el, 'context');
     }
   }
 

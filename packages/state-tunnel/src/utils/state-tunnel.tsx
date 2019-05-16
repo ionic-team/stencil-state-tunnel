@@ -25,6 +25,11 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
       listeners.set(instance, propList);
       updateListener(propList, instance);
     }
+    return () => {
+      if (listeners.has(instance)) {
+        listeners.delete(instance);
+      }
+    }
   }
 
   const Provider: FunctionalComponent<{state: T}> = ({ state }, children) => {

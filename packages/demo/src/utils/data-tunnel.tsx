@@ -1,3 +1,4 @@
+import { h } from '@stencil/core';
 import { createProviderConsumer } from '@stencil/state-tunnel';
 
 export interface MessageItem {
@@ -11,7 +12,6 @@ export interface Recipient {
   id: string,
   name: string
 }
-
 
 export interface State {
   messageLog: MessageItem[],
