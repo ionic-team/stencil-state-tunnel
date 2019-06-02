@@ -1,30 +1,31 @@
 {
-  "name": "@stencil/starter",
-  "private": true,
-  "version": "0.0.1",
-  "description": "Stencil App Starter",
-  "scripts": {
-    "build": "../../node_modules/.bin/stencil build --prerender",
-    "start": "../../node_modules/.bin/stencil build --dev --watch --serve",
-    "test": "../../node_modules/.bin/jest",
-    "test.watch": "../../node_modules/.bin/jest --watch"
-  },
-  "dependencies": {
-    "@stencil/router": "^0.2.6",
-    "@stencil/state-tunnel": "0.0.8"
-  },
-  "devDependencies": {},
-  "jest": {
-    "transform": {
-      "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "json",
-      "jsx"
-    ]
-  }
+	"name": "@stencil/starter",
+	"private": true,
+	"version": "0.0.1",
+	"description": "Stencil App Starter",
+	"scripts": {
+		"build": "../../node_modules/.bin/stencil build",
+		"start": "../../node_modules/.bin/stencil build --dev --watch --serve",
+		"test": "../../node_modules/.bin/stencil test --spec --e2e",
+		"test.watch": "../../node_modules/.bin/stencil test --spec --e2e --watchAll"
+	},
+	"dependencies": {
+		"@stencil/state-tunnel": "1.0.0-1"
+	},
+	"jest": {
+		"transform": {
+			"^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
+		},
+		"testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
+		"moduleFileExtensions": [
+			"ts",
+			"tsx",
+			"js",
+			"json",
+			"jsx"
+		]
+	},
+	"devDependencies": {
+		"workbox-build": "4.3.1"
+	}
 }

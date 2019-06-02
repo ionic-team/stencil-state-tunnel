@@ -1,4 +1,4 @@
-import { Component, State } from '@stencil/core';
+import { h, Component, State } from '@stencil/core';
 import Tunnel, { State as TunnelState, MessageItem, Recipient } from '../utils/data-tunnel'; // Import the Tunnel
 import * as API from '../utils/api-util';
 

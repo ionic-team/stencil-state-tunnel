@@ -1,24 +1,25 @@
 {
   "name": "@stencil/state-tunnel",
-  "version": "0.0.9-4",
+  "version": "1.0.0-0",
   "description": "Stencil State Tunnel",
-  "module": "dist/index.mjs",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
   "files": [
     "dist/"
   ],
   "scripts": {
     "build": "../../node_modules/.bin/stencil build",
+    "release": "np --any-branch --tag=one",
     "start": "../../node_modules/.bin/stencil build --dev --watch --serve",
     "test": "../../node_modules/.bin/jest",
-    "test.watch": "../../node_modules/.bin/jest --watch",
-    "deploy": "np"
+    "test.watch": "../../node_modules/.bin/jest --watch"
   },
   "dependencies": {},
   "devDependencies": {
-    "np": "^3.0.4"
+    "np": "^5.0.1"
   },
   "repository": {
     "type": "git",

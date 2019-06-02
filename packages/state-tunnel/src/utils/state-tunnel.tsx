@@ -1,33 +1,34 @@
-import { FunctionalComponent, HTMLStencilElement } from "@stencil/core";
+import { ComponentInterface, FunctionalComponent } from '@stencil/core';
 import { SubscribeCallback, ConsumerRenderer, PropList } from '../declarations';
+
 
 export const createProviderConsumer = <T extends {[key: string]: any}>(defaultState: T, consumerRender: ConsumerRenderer<T>) => {
 
-  let listeners: Map<HTMLStencilElement, PropList<T>> = new Map();
+  let listeners: Map<any, PropList<T>> = new Map();
   let currentState: T = defaultState;
 
-  const updateListener = (fields: PropList<T>, listener: HTMLStencilElement) => {
+  const updateListener = (fields: PropList<T>, instance: any) => {
     if (Array.isArray(fields)) {
       [...fields].forEach(fieldName => {
-        (listener as any)[fieldName] = currentState[fieldName];
+        (instance as any)[fieldName] = currentState[fieldName];
       });
+
     } else {
-      (listener as any)[fields] = {
+      (instance as any)[fields] = {
         ...currentState as object
       } as T;
     }
-    listener.forceUpdate();
   }
 
-  const subscribe: SubscribeCallback<T> = (el: HTMLStencilElement, propList: PropList<T>) => {
-    if (listeners.has(el)) {
-      return () => {};
+  const subscribe: SubscribeCallback<T> = (instance: ComponentInterface, propList: PropList<T>) => {
+    if (!listeners.has(instance)) {
+      listeners.set(instance, propList);
+      updateListener(propList, instance);
     }
-    listeners.set(el, propList);
-    updateListener(propList, el);
-
     return () => {
-      listeners.delete(el);
+      if (listeners.has(instance)) {
+        listeners.delete(instance);
+      }
     }
   }
 
@@ -43,32 +44,25 @@ export const createProviderConsumer = <T extends {[key: string]: any}>(defaultSt
     return consumerRender(subscribe, children[0] as any);
   }
 
-  const injectProps = (childComponent: any, fieldList: PropList<T>) => {
-    let unsubscribe: any = null;
+  const injectProps = (Cstr: any, fieldList: PropList<T>) => {
+    const CstrPrototype = Cstr.prototype;
+    const cstrConnectedCallback = CstrPrototype.connectedCallback;
+    const cstrDisconnectedCallback = CstrPrototype.disconnectedCallback;
 
-    const elementRefName = Object.keys(childComponent.properties).find(propName => {
-      return childComponent.properties[propName].elementRef == true;
-    });
-    if (elementRefName == undefined) {
-      throw new Error(`Please ensure that your Component ${childComponent.is} has an attribute with an "@Element" decorator. ` +
-        `This is required to be able to inject properties.`);
-    }
+    CstrPrototype.connectedCallback = function() {
+      subscribe(this, fieldList);
 
-    const prevComponentWillLoad = childComponent.prototype.componentWillLoad;
-    childComponent.prototype.componentWillLoad = function() {
-      unsubscribe = subscribe(this[elementRefName], fieldList);
-      if (prevComponentWillLoad) {
-        return prevComponentWillLoad.bind(this)();
+      if (cstrConnectedCallback) {
+        return cstrConnectedCallback.call(this);
       }
     }
 
-    const prevComponentDidUnload = childComponent.prototype.componentDidUnload;
-    childComponent.prototype.componentDidUnload = function() {
-      unsubscribe();
-      if (prevComponentDidUnload) {
-        return prevComponentDidUnload.bind(this)();
+    CstrPrototype.disconnectedCallback = function() {
+      listeners.delete(this);
+      if (cstrDisconnectedCallback) {
+        cstrDisconnectedCallback.call(this);
       }
-    }
+    };
   }
 
   return {

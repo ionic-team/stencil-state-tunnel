@@ -1,4 +1,4 @@
-import { Component } from '@stencil/core';
+import { h, Component } from '@stencil/core';
 import Tunnel, { State } from '../utils/data-tunnel'; // Import the tunnel
 
 function dateToTimestamp(d: Date) {

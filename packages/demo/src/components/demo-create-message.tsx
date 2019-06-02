@@ -1,4 +1,4 @@
-import { Component, Prop, State, Element } from '@stencil/core';
+import { h, Component, Prop, State } from '@stencil/core';
 import Tunnel, { Recipient } from '../utils/data-tunnel';
 
 @Component({
@@ -10,7 +10,6 @@ import Tunnel, { Recipient } from '../utils/data-tunnel';
   `
 })
 export class DemoCreateMessage {
-  @Element() el;
   @Prop() sendMessage: (msg: string, recipients: Recipient[]) => Promise<void>;
   @Prop() getReceiverList: () => Promise<Recipient[]>;
   @Prop() setCreatingMessage: (createMessage: boolean) => void;

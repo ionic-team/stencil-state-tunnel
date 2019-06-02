@@ -1,11 +1,11 @@
-import { Component, HTMLStencilElement, Prop, State, Element } from '@stencil/core';
+import { Component, Prop, State, Element } from '@stencil/core';
 import { SubscribeCallback } from '../declarations';
 
 @Component({
   tag: 'context-consumer'
 })
 export class ContextConsumer {
-  @Element() el!: HTMLStencilElement;
+  @Element() el!: any;
 
   @Prop() context: { [key: string]: any } = {};
   @Prop() renderer: Function = () => null;
@@ -13,15 +13,13 @@ export class ContextConsumer {
 
   @State() unsubscribe?: () => void;
 
-  componentWillLoad() {
-    this.unsubscribe = () => {
-      if (this.subscribe != null) {
-        this.subscribe(this.el, 'context');
-      }
+  connectedCallback() {
+    if (this.subscribe != null) {
+      this.unsubscribe = this.subscribe(this.el, 'context');
     }
   }
 
-  componentDidUnload() {
+  disconnectedCallback() {
     if (this.unsubscribe != null) {
       this.unsubscribe();
     }
