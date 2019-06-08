@@ -6,11 +6,9 @@
 
 
 import { HTMLStencilElement, JSXBase } from '@stencil/core/internal';
-import { JSX } from '@stencil/core';
 import {
   SubscribeCallback,
 } from './declarations';
-
 
 export namespace Components {
   interface ContextConsumer {
@@ -20,8 +18,21 @@ export namespace Components {
   }
 }
 
+declare global {
+
+
+  interface HTMLContextConsumerElement extends Components.ContextConsumer, HTMLStencilElement {}
+  var HTMLContextConsumerElement: {
+    prototype: HTMLContextConsumerElement;
+    new (): HTMLContextConsumerElement;
+  };
+  interface HTMLElementTagNameMap {
+    'context-consumer': HTMLContextConsumerElement;
+  }
+}
+
 declare namespace LocalJSX {
-  interface ContextConsumer extends JSXBase.HTMLAttributes {
+  interface ContextConsumer extends JSXBase.HTMLAttributes<HTMLContextConsumerElement> {
     'context'?: { [key: string]: any };
     'renderer'?: Function;
     'subscribe'?: SubscribeCallback<any>;
@@ -41,21 +52,4 @@ declare module "@stencil/core" {
   }
 }
 
-
-declare global {
-
-
-
-  interface HTMLContextConsumerElement extends Components.ContextConsumer, HTMLStencilElement {}
-  var HTMLContextConsumerElement: {
-    prototype: HTMLContextConsumerElement;
-    new (): HTMLContextConsumerElement;
-  };
-
-  interface HTMLElementTagNameMap {
-    'context-consumer': HTMLContextConsumerElement;
-  }
-
-  interface ElementTagNameMap extends HTMLElementTagNameMap {}
-}
 
