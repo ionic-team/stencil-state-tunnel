@@ -12,14 +12,14 @@
   ],
   "scripts": {
     "build": "../../node_modules/.bin/stencil build",
-    "release": "np --any-branch",
+    "release": "np",
     "start": "../../node_modules/.bin/stencil build --dev --watch --serve",
     "test": "../../node_modules/.bin/jest",
     "test.watch": "../../node_modules/.bin/jest --watch"
   },
   "dependencies": {},
   "devDependencies": {
-    "np": "^5.0.1"
+    "np": "^5.0.3"
   },
   "repository": {
     "type": "git",
